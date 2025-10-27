@@ -26,11 +26,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # todo: add sops
-    # sops-nix = {
-    #   url = "github:Mic92/sops-nix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # add when setting up darwin
     # mac-app-util.url = "github:hraban/mac-app-util";
@@ -91,9 +90,8 @@
       #   sops-nix.homeManagerModules.sops
       # ];
 
-      # todo: add sops
-      # systems.modules.nixos = with inputs; [
-      #   sops-nix.nixosModules.sops
-      # ];
+      systems.modules.nixos = with inputs; [
+        sops-nix.nixosModules.sops
+      ];
     };
 }
