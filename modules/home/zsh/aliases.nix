@@ -30,13 +30,12 @@
     zipr = "zip -r"; # zip a dir
 
     # Configuration shortcuts
-    rb = "home-manager switch";
     vconf = "nvim ~/.config/nvim/init.lua";
-    # gconf = "nvim ~/.config/home-manager/homes/modules/ghostty.nix && home-manager switch";
-    # pconf = "nvim ~/.config/home-manager/homes/modules/starship.nix && home-manager switch";
-    # zconf = "nvim ~/.config/home-manager/homes/modules/zsh.nix && home-manager switch";
-    # nconf = "nvim ~/.config/home-manager/homes/a.zaninovich.nix && home-manager switch";
-    # cnc = "pushd ~/.config/home-manager && claude; popd";
+    # gconf = "nvim ~/.config/snowfall/homes/modules/ghostty.nix && home-manager switch";
+    # pconf = "nvim ~/.config/snowfall/homes/modules/starship.nix && home-manager switch";
+    # zconf = "nvim ~/.config/snowfall/homes/modules/zsh.nix && home-manager switch";
+    # nconf = "nvim ~/.config/snowfall/homes/a.zaninovich.nix && home-manager switch";
+    # cnc = "pushd ~/.config/snowfall && claude; popd";
 
     more = "less";
 
@@ -396,7 +395,7 @@
     (lib.mkOrder 950 ''
       ea() {
         # Edit aliases and functions in nvim with split view
-        nvim -O ~/.config/home-manager/homes/modules/zsh/aliases.nix ~/.config/home-manager/homes/modules/zsh/functions.nix
+        nvim -O ~/.config/snowfall/homes/modules/zsh/aliases.nix ~/.config/snowfall/homes/modules/zsh/functions.nix
 
         # Apply changes with home-manager
         echo "Applying changes with home-manager switch..."
@@ -450,7 +449,7 @@
           esac
         done
 
-        pushd ~/.config/home-manager > /dev/null
+        pushd ~/.config/snowfall > /dev/null
 
         # Pull if requested
         if $do_pull; then
@@ -496,15 +495,15 @@
         if [[ -d /etc/nixos ]]; then
           # NixOS host
           ohai "Detected NixOS host, running nixos-rebuild..."
-          sudo nixos-rebuild switch --flake ~/.config/home-manager
+          sudo nixos-rebuild switch --flake ~/.config/snowfall
         elif [[ "$(uname)" == "Darwin" ]]; then
           # macOS host with nix-darwin + home-manager
           ohai "Detected macOS host, running darwin-rebuild..."
-          sudo darwin-rebuild switch --flake ~/.config/home-manager
+          sudo darwin-rebuild switch --flake ~/.config/snowfall
 
           if [[ $? -eq 0 ]]; then
-            ohai "Darwin rebuild successful, now running home-manager..."
-            home-manager switch --flake ~/.config/home-manager
+            ohai "Darwin rebuild successful, now running snowfall..."
+            # home-manager switch --flake ~/.config/snowfall
           else
             error "Darwin rebuild failed, skipping home-manager"
             return 1
@@ -512,7 +511,7 @@
         else
           # Other Linux distro with home-manager only
           ohai "Detected Linux host, running home-manager..."
-          home-manager switch --flake ~/.config/home-manager
+          # home-manager switch --flake ~/.config/snowfall
         fi
 
         popd > /dev/null

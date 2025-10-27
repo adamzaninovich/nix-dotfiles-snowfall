@@ -97,8 +97,7 @@
         enable = true;
         wayland = true;
       };
-      windowManager.hypr.enable = true;
-      # excludePackages = [ pkgs.xterm ];
+      excludePackages = [ pkgs.xterm ];
     };
   };
 
@@ -183,17 +182,21 @@
       swww
       pywal
       python2
-      blueman
-      bluez
+
       pulseaudio
       networkmanager
       gnome-network-displays
       swaynotificationcenter
-      kdePackages.dolphin
       wofi
-      wl-clipboard
+      kdePackages.dolphin
+
       # general
+      brightnessctl
+      blueman
+      bluez
+      wl-clipboard
       usbutils
+
       neofetch
       git
       tree
