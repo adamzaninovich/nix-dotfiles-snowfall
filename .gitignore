@@ -2,3 +2,12 @@
 result
 .claude
 .mcp.json
+
+# SOPS - prevent accidental commit of private keys and unencrypted secrets
+secrets/**/*.key
+secrets/**/*.age
+secrets/**/keys.txt
+secrets/**/*.txt
+!secrets/**/README.md
+secrets/**/*.json.dec
+secrets/**/*.yaml.dec

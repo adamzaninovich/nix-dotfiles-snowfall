@@ -74,12 +74,6 @@
         permittedInsecurePackages = [ "python-2.7.18.8" ];
       };
 
-      # how to do this with snowfall?
-      # extraSpecialArgsFor = system: {
-      #   inherit inputs mac-app-util comic-code doom-fonts;
-      #   pkgs-unstable = unstableFor system;
-      # };
-
       # how to do this with all mac users?
       # homes.users."adam@Rocinante".modules = with inputs; [
       #   mac-app-util.homeManagerModules.default

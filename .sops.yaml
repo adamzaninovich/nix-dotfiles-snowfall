@@ -1,0 +1,16 @@
+# SOPS Configuration
+# This file defines encryption rules for secrets in this repository.
+#
+# SETUP REQUIRED: Replace YOUR_AGE_PUBLIC_KEY_HERE with the actual age public key.
+#
+# To get the age public key on tachi:
+#   sudo nix-shell -p ssh-to-age --run 'ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub'
+
+keys:
+  - &tachi YOUR_AGE_PUBLIC_KEY_HERE
+
+creation_rules:
+  - path_regex: secrets/system-secrets\.yaml$
+    key_groups:
+      - age:
+          - *tachi

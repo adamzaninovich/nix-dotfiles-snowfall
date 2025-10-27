@@ -122,11 +122,10 @@
   };
 
   users = {
-    mutableUsers = true;
+    mutableUsers = false;
     users.adam = {
       isNormalUser = true;
-      # add with sops, then remove mutableUsers
-      # hashedPasswordFile = config.sops.secrets.adam-password.path;
+      hashedPasswordFile = config.sops.secrets.adam-password.path;
       extraGroups = [ "wheel" "networkmanager" "docker" ];
       shell = pkgs.zsh;
       openssh.authorizedKeys.keys = [
