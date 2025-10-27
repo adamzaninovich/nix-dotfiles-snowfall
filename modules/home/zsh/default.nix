@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
+with lib;
 let
   cfg = config.bravo.zsh;
   zshAliases = import ./aliases.nix { inherit config lib pkgs; };
-  zshFunctions = import ./functions.nix { inherit config lib pkgs; };
 in
 {
   options.bravo.zsh = with types; {
@@ -10,7 +10,6 @@ in
   };
 
   config = {
-
     home = {
       packages = with pkgs; [ ];
       sessionVariables = {
@@ -18,6 +17,7 @@ in
         CDPATH = "$HOME:$HOME/projects";
       };
     };
+
     programs.command-not-found.enable = true;
 
     programs.fzf = {
@@ -90,138 +90,137 @@ in
           ];
       }
       zshAliases.programs.zsh
-      zshFunctions.programs.zsh
     ];
-  };
 
-  programs.starship = {
-    enable = true;
-    enableZshIntegration = true;
-    settings = {
-      add_newline = false;
+    programs.starship = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        add_newline = false;
 
-      format = "[󱓞](bold bright-pink) $directory $character";
-      right_format = "$all";
+        format = "[󱓞](bold bright-pink) $directory $character";
+        right_format = "$all";
 
-      character = {
-        success_symbol = "[](bold bright-yellow)";
-        error_symbol = "[](bold bright-red)";
-        vicmd_symbol = "[ ](bold bright-green)";
-      };
+        character = {
+          success_symbol = "[](bold bright-yellow)";
+          error_symbol = "[](bold bright-red)";
+          vicmd_symbol = "[ ](bold bright-green)";
+        };
 
-      cmd_duration = {
-        show_notifications = false;
-        format = "[ 󰗎 $duration](bold bright-yellow)";
-      };
+        cmd_duration = {
+          show_notifications = false;
+          format = "[ 󰗎 $duration](bold bright-yellow)";
+        };
 
-      battery = {
-        format = " [$symbol$percentage]($style)";
-        display = [
-          {
-            threshold = 20;
-            style = "bold bright-red";
-          }
-        ];
-      };
+        battery = {
+          format = " [$symbol$percentage]($style)";
+          display = [
+            {
+              threshold = 20;
+              style = "bold bright-red";
+            }
+          ];
+        };
 
-      username = {
-        format = "[  $user]($style) ";
-        disabled = false;
-        show_always = false;
-        style_user = "bold bright-yellow";
-        style_root = "bold bright-red";
-      };
+        username = {
+          format = "[  $user]($style) ";
+          disabled = false;
+          show_always = false;
+          style_user = "bold bright-yellow";
+          style_root = "bold bright-red";
+        };
 
-      hostname = {
-        ssh_only = true;
-        format = "[󱓞 $hostname]($style) ";
-        style = "bold bright-red";
-      };
+        hostname = {
+          ssh_only = true;
+          format = "[󱓞 $hostname]($style) ";
+          style = "bold bright-red";
+        };
 
-      directory = {
-        read_only = "  ";
-        format = "[$path]($style)[$read_only]($read_only_style)";
-        style = "bold bright-blue";
-        truncation_length = 1;
-      };
+        directory = {
+          read_only = "  ";
+          format = "[$path]($style)[$read_only]($read_only_style)";
+          style = "bold bright-blue";
+          truncation_length = 1;
+        };
 
-      git_branch = {
-        symbol = " ";
-        format = " [$symbol$branch]($style)";
-        style = "bold bright-green";
-        truncation_length = 35;
-      };
+        git_branch = {
+          symbol = " ";
+          format = " [$symbol$branch]($style)";
+          style = "bold bright-green";
+          truncation_length = 35;
+        };
 
-      git_status = {
-        format = "([$all_status$ahead_behind]($style))";
-        style = "bold bright-yellow";
-      };
+        git_status = {
+          format = "([$all_status$ahead_behind]($style))";
+          style = "bold bright-yellow";
+        };
 
-      elixir = {
-        symbol = "";
-        format = " [$symbol]($style)";
-        style = "bold bright-purple";
-      };
+        elixir = {
+          symbol = "";
+          format = " [$symbol]($style)";
+          style = "bold bright-purple";
+        };
 
-      erlang = {
-        symbol = " ";
-        format = " [$symbol]($style)";
-        style = "bold bright-red";
-      };
+        erlang = {
+          symbol = " ";
+          format = " [$symbol]($style)";
+          style = "bold bright-red";
+        };
 
-      rust = {
-        symbol = " ";
-        format = " [$symbol]($style)";
-        style = "bold bright-red";
-      };
+        rust = {
+          symbol = " ";
+          format = " [$symbol]($style)";
+          style = "bold bright-red";
+        };
 
-      nodejs = {
-        symbol = " ";
-        format = " [$symbol]($style)";
-      };
+        nodejs = {
+          symbol = " ";
+          format = " [$symbol]($style)";
+        };
 
-      ruby = {
-        symbol = " ";
-        format = " [$symbol]($style)";
-        style = "bold bright-red";
-      };
+        ruby = {
+          symbol = " ";
+          format = " [$symbol]($style)";
+          style = "bold bright-red";
+        };
 
-      python = {
-        symbol = " ";
-        format = " [$symbol]($style)";
-        style = "bold bright-yellow";
-      };
+        python = {
+          symbol = " ";
+          format = " [$symbol]($style)";
+          style = "bold bright-yellow";
+        };
 
-      package = {
-        symbol = "󰏗 ";
-        disabled = true;
-      };
+        package = {
+          symbol = "󰏗 ";
+          disabled = true;
+        };
 
-      aws.symbol = " ";
-      conda.symbol = " ";
-      dart.symbol = " ";
-      docker_context = {
-        symbol = " ";
-        disabled = true;
+        aws.symbol = " ";
+        conda.symbol = " ";
+        dart.symbol = " ";
+        docker_context = {
+          symbol = " ";
+          disabled = true;
+        };
+        elm.symbol = " ";
+        golang = {
+          symbol = " ";
+          format = " [$symbol($version)]($style)";
+        };
+        haskell.symbol = " ";
+        hg_branch.symbol = " ";
+        java.symbol = " ";
+        julia.symbol = " ";
+        memory_usage.symbol = "󰍛 ";
+        nim.symbol = " ";
+        nix_shell = {
+          symbol = " ";
+          format = " [$symbol$state]($style)";
+        };
+        perl.symbol = " ";
+        php.symbol = " ";
+        swift.symbol = " ";
       };
-      elm.symbol = " ";
-      golang = {
-        symbol = " ";
-        format = " [$symbol($version)]($style)";
-      };
-      haskell.symbol = " ";
-      hg_branch.symbol = " ";
-      java.symbol = " ";
-      julia.symbol = " ";
-      memory_usage.symbol = "󰍛 ";
-      nim.symbol = " ";
-      nix_shell = {
-        symbol = " ";
-        format = " [$symbol$state]($style)";
-      };
-      perl.symbol = " ";
-      php.symbol = " ";
-      swift.symbol = " ";
     };
   };
 }

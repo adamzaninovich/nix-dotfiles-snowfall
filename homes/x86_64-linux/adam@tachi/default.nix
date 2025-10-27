@@ -5,6 +5,8 @@
   bravo = {
     zsh.enable = true;
     bat.enable = true;
+    neovim.enable = true;
+    claude.enable = true;
 
     gpg = {
       enable = true;
@@ -15,22 +17,15 @@
     ghostty = {
       enable = true;
       installPackage = true;
+      fontSize = 10;
     };
 
     lang.elixir.enable = false;
     doom-emacs.enable = false;
-    neovim.enable = false;
-    claude.enable = false;
   };
 
   programs.zsh.shellAliases.rebuild = "sudo nixos-rebuild switch";
   programs.ssh.enable = true;
-  programs.doom-emacs.enable = true;
-
-  # Host-specific Ghostty overrides
-  programs.ghostty.settings = {
-    font-size = 12;  # Override the default 14
-  };
 
   home ={
     username = "adam";
@@ -42,5 +37,5 @@
   };
 
   programs.home-manager.enable = true;
-};
+}
 

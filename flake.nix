@@ -66,12 +66,19 @@
   };
 
   outputs = inputs:
+
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
-
       src = ./.;
 
-      snowfall.namespace = "bravo";
+      snowfall = {
+        namespace = "bravo";
+
+        meta = {
+          name = "snowfall-config-nix-flake";
+          title = "Adam's Snowfall Nix Config";
+        };
+      };
 
       channels-config = {
         allowUnfree = true;

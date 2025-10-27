@@ -6,10 +6,15 @@ in
 {
   options.bravo.ghostty = with types; {
     enable = mkEnableOption "Ghostty terminal";
-    ghostty.installPackage = lib.mkOption {
+    installPackage = lib.mkOption {
       type = lib.types.bool;
       default = true;
       description = "Whether to install the Ghostty package via nixpkgs";
+    };
+    fontSize = lib.mkOption {
+      type = lib.types.int;
+      default = 14;
+      description = "Font size for Ghostty terminal";
     };
   };
 
@@ -20,12 +25,12 @@ in
 
     programs.ghostty = {
       enable = true;
-      package = if config.ghostty.installPackage then pkgs.ghostty else null;
+      package = if cfg.installPackage then pkgs.ghostty else null;
       enableZshIntegration = true;
       settings = {
         theme = if pkgs.stdenv.isLinux then "rose-pine-moon" else "Rose Pine Moon";
         font-family = "ComicCode Nerd Font Medium";
-        font-size = 14;
+        font-size = cfg.fontSize;
 
         window-padding-x = 4;
 

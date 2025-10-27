@@ -20,24 +20,21 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Install Doom Emacs fonts
-    home.packages = [ doomFonts ];
+    home.packages = with pkgs; [
+      inputs.doom-fonts.packages.${pkgs.system}.all-fonts
 
-  home.packages = with pkgs; [
-    inputs.doom-fonts.packages.${pkgs.system}.all-fonts;
+      # Emacs with PGTK for proper Wayland support (fixes blurry text)
+      (emacs30.override {
+        withPgtk = true;
+        withTreeSitter = true;
+        withWebP = true;
+        withSQLite3 = true;
+      })
 
-    # Emacs with PGTK for proper Wayland support (fixes blurry text)
-    (emacs30.override {
-      withPgtk = true;
-      withTreeSitter = true;
-      withWebP = true;
-      withSQLite3 = true;
-    })
-
-    libtool
-    nerd-fonts.symbols-only
-    inputs.comic-code.packages.${pkgs.system}.default
-  ];
+      libtool
+      nerd-fonts.symbols-only
+      inputs.comic-code.packages.${pkgs.system}.default
+    ];
 
     # Add doom to PATH
     home.sessionPath = [ "${doomBinDir}" ];

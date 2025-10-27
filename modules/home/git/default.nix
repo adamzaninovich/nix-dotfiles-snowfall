@@ -48,7 +48,6 @@
       diff = { algorithm = "histogram"; };
       status = { showUntrackedFiles = "all"; };
       blame = { date = "relative"; };
-      branch.sort = "-committerdate";
       push.autoSetupRemote = true;
       checkout = { defaultRemote = "origin"; };
       url."git@github.com:adam.zaninovich/".insteadOf = "me:";
