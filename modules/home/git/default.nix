@@ -5,14 +5,14 @@
   #   pkgs.git-extras
   # ];
 
-  # programs.gh = {
-  #   enable = true;
-  #   settings = {
-  #     git_protocol = "ssh";
-  #     editor = "nvim";
-  #   };
-  #   extensions = with pkgs; [ gh-dash ];
-  # };
+  programs.gh = {
+    enable = true;
+    settings = {
+      git_protocol = "ssh";
+      editor = "nvim";
+    };
+    extensions = with pkgs; [ gh-dash ];
+  };
 
   programs.git = {
     enable = true;

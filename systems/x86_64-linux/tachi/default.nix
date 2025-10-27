@@ -17,8 +17,6 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    # delete this if unneeded
-    # nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
   };
 
   # is this needed since it's in the flake?
@@ -35,7 +33,7 @@
     networkmanager.wifi.backend = "iwd";
   };
 
-  # System Settings.
+  # System Settings
   system.stateVersion = "25.05";
   time.timeZone = "America/Los_Angeles";
   console.useXkbConfig = true;
@@ -54,16 +52,29 @@
 
   # Services
   services = {
-    libinput.enable = true; # Libinput
-    fwupd.enable = true; # LVFS Firmware updates
     # printing.enable = true; # CUPS
     # flatpak.enable = true; # Flatpak
     # tailscale.enable = true; # Tailscale
+    dbus.enable = true;
+    libinput.enable = true; # Libinput
+    fwupd.enable = true; # LVFS Firmware updates
+
+    # Audio WHAT?
+    pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
     # ZFS
     zfs = {
       autoScrub.enable = true;
       trim.enable = true;
     };
+
     # OpenSSH
     openssh = {
       enable = true;
@@ -73,62 +84,42 @@
         PermitRootLogin = "no";
       };
     };
-  };
 
-  # Enable Wayland, setup Gnome, etc
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "us";
-      variant = "";
-      options = "ctrl:nocaps";
-    };
-    displayManager.gdm = {
+    # Enable Wayland and Hyprland
+    xserver = {
       enable = true;
-      wayland = true;
+      xkb = {
+        layout = "us";
+        variant = "";
+        options = "ctrl:nocaps";
+      };
+      displayManager.gdm = {
+        enable = true;
+        wayland = true;
+      };
+      windowManager.hypr.enable = true;
+      # excludePackages = [ pkgs.xterm ];
     };
-    # todo: remove gnome after figuring out the networking deps
-    desktopManager.gnome.enable = true;
-    windowManager.hypr.enable = true;
-    excludePackages = [ pkgs.xterm ];
   };
 
-  programs.hyprland.enable = true;
+  programs = {
+    hyprland.enable = true;
+    zsh.enable = true;
+    nm-applet.enable = true;
+    dconf.enable = true;
+
+    # TODO: move 1pw to home config
+    _1password.enable = true;
+    _1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [ "adam" ];
+    };
+  };
 
   # might not be needed
   hardware = {
     bluetooth.enable = true;
     enableRedistributableFirmware = true;
-  };
-
-  # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
-
-  # Enable zsh system-wide
-  environment.shells = [ pkgs.zsh ];
-  programs.zsh.enable = true;
-
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "adam" ];
-  };
-
-  environment.etc = {
-    "1password/custom_allowed_browsers" = {
-      text = ''
-        .zen
-      ''; # or just "zen" if you use unwrapped package
-      mode = "0755";
-    };
   };
 
   users = {
@@ -146,71 +137,91 @@
     };
   };
 
-  # Enable passwordless sudo
-  security.sudo.extraRules = [ { users = [ "adam" ]; commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ]; } ];
+  security = {
+    # needed for sound with pipewire.
+    rtkit.enable = true;
+
+    # Enable passwordless sudo
+    sudo.extraRules = [
+      {
+        users = [ "adam" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+  };
 
   # needed?
   fonts.packages = [ ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
-  # Install some additional packages
-  environment.systemPackages = with pkgs; [
-    # hyprland
-    rose-pine-cursor
-    rose-pine-hyprcursor
-    nwg-look
-    waybar
-    hyprpicker
-    hyprlock
-    swww
-    pywal
-    python2
-    blueman
-    bluez
-    pulseaudio
-    networkmanager
-    gnome-network-displays
-    swaynotificationcenter
-    kdePackages.dolphin
-    wofi
-    # general
-    usbutils
-    neofetch
-    git
-    tree
-    eza
-    neovim
-    zip
-    unzip
-    wget
-    lm_sensors
-    whois
-    dig
-    gnupg
-    pika-backup
-    localsend
+  environment = {
+    # Enable zsh system-wide
+    shells = [ pkgs.zsh ];
 
-    inputs.zen-browser.packages."${pkgs.system}".default
+    etc = {
+      "1password/custom_allowed_browsers" = {
+        text = ''
+          zen
+        '';
+        mode = "0755";
+      };
+    };
 
-    inputs.comic-code.packages.${pkgs.system}.default
+    # Install some additional packages
+    systemPackages = with pkgs; [
+      # hyprland
+      rose-pine-cursor
+      rose-pine-hyprcursor
+      nwg-look
+      waybar
+      hyprpicker
+      hyprlock
+      swww
+      pywal
+      python2
+      blueman
+      bluez
+      pulseaudio
+      networkmanager
+      gnome-network-displays
+      swaynotificationcenter
+      kdePackages.dolphin
+      wofi
+      wl-clipboard
+      # general
+      usbutils
+      neofetch
+      git
+      tree
+      eza
+      neovim
+      zip
+      unzip
+      wget
+      lm_sensors
+      whois
+      dig
+      gnupg
+      pika-backup
+      localsend
 
-    # # Emacs with PGTK for proper Wayland support (fixes blurry text)
-    # (emacs30.override {
-    #   withPgtk = true;
-    #   withTreeSitter = true;
-    #   withWebP = true;
-    #   withSQLite3 = true;
-    # })
-    # # needed for emacs vterm compilation
-    # libtool
-    nerd-fonts.symbols-only
-  ];
+      inputs.zen-browser.packages."${pkgs.system}".default
+      inputs.comic-code.packages.${pkgs.system}.default
 
-  # Enable program features
-  # programs = {
-  #   firefox = {
-  #     enable = true;
-  #     languagePacks = [ "en-US" ];
-  #   };
-  # };
-
+      # # Emacs with PGTK for proper Wayland support (fixes blurry text)
+      # (emacs30.override {
+      #   withPgtk = true;
+      #   withTreeSitter = true;
+      #   withWebP = true;
+      #   withSQLite3 = true;
+      # })
+      # # needed for emacs vterm compilation
+      # libtool
+      nerd-fonts.symbols-only
+    ];
+  };
 }
