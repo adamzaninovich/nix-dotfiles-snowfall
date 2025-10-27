@@ -32,7 +32,7 @@
     homeDirectory = "/home/adam";
     stateVersion = "25.05";
     packages = with pkgs; [
-      # inputs.comic-code.packages.${pkgs.system}.default
+      bambu-studio
     ];
   };
 
