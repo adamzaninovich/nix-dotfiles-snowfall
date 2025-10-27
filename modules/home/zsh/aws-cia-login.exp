@@ -1,0 +1,62 @@
+#!/usr/bin/expect -f
+
+# Set encoding to UTF-8
+fconfigure stdout -encoding utf-8
+fconfigure stderr -encoding utf-8
+
+# Get username and password from macOS keychain
+set username [exec sh -c "security find-generic-password -a aws-cia -s username -w 2>/dev/null || echo ''"]
+set password [exec sh -c "security find-generic-password -a aws-cia -s password -w 2>/dev/null || echo ''"]
+
+# Check if environment variables are set
+if {$username eq "" || $password eq ""} {
+  puts "Error: AWS credentials not found in keychain"
+  puts "Run 'aws-setup' to store your credentials securely"
+  exit 1
+}
+set timeout 30
+
+# Start the aws-cia login command
+spawn aws-cia login
+
+# Handle username prompt
+expect "Enter Username:" {
+  send "$username\r"
+}
+
+# Handle password prompt
+expect "Enter your password:" {
+  send "$password\r"
+}
+
+# Wait for login success
+expect "Login Successful."
+
+# Wait for the Duo code prompt and extract the 3-digit code
+expect -re "Enter 3 digit Duo code in app: (\[0-9\]{3})" {
+  set duo_code $expect_out(1,string)
+  puts ""
+  # Copy duo code to clipboard
+  exec echo -n $duo_code | pbcopy
+  puts "Waiting for MFA completion..."
+}
+
+# Wait for MFA success
+expect "MFA Successful."
+
+# Handle role selection - look for REDACTED_ROLE and select it
+expect {
+  -re "(\[0-9\]+)\. REDACTED_ROLE" {
+    set role_number $expect_out(1,string)
+    puts "Found REDACTED_ROLE as option $role_number"
+  }
+}
+
+expect "Choose your role:" {
+  send "$role_number\r"
+}
+
+# Wait for final success message
+expect "Credentials updated successfully. Enjoy your AWS sessions!"
+
+puts "\nAWS login completed successfully!"
