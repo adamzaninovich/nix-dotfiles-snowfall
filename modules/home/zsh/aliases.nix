@@ -31,6 +31,7 @@
 
     # Configuration shortcuts
     vconf = "nvim ~/.config/nvim/init.lua";
+    hconf = "nvim ~/.config/hypr/hyprland.conf";
     # gconf = "nvim ~/.config/snowfall/homes/modules/ghostty.nix && home-manager switch";
     # pconf = "nvim ~/.config/snowfall/homes/modules/starship.nix && home-manager switch";
     # zconf = "nvim ~/.config/snowfall/homes/modules/zsh.nix && home-manager switch";
@@ -395,18 +396,19 @@
     (lib.mkOrder 950 ''
       ea() {
         # Edit aliases and functions in nvim with split view
-        nvim -O ~/.config/snowfall/homes/modules/zsh/aliases.nix ~/.config/snowfall/homes/modules/zsh/functions.nix
+        nvim -O ~/.config/snowfall/modules/home/zsh/aliases.nix
 
         # Apply changes with home-manager
-        echo "Applying changes with home-manager switch..."
-        if home-manager switch; then
+        echo "Applying changes with switch..."
+        switch
+        if [[ "$?" == "0" ]]; then
           echo "Successfully applied changes!"
 
           # Re-exec zsh to get the new functions in current shell
           echo "Reloading shell to apply new functions..."
           exec zsh
         else
-          echo "home-manager switch failed"
+          echo "switch failed"
           return 1
         fi
       }
