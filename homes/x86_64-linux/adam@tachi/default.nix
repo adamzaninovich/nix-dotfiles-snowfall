@@ -27,13 +27,17 @@
   programs.zsh.shellAliases.rebuild = "sudo nixos-rebuild switch";
   programs.ssh.enable = true;
 
+  home.file."Pictures/wallpaper.png".source = ../../../assets/flake-wallpaper.png;
+
   home ={
     username = "adam";
     homeDirectory = "/home/adam";
     stateVersion = "25.05";
     packages = with pkgs; [
       bambu-studio
+      kdePackages.gwenview
       imagemagick
+      imv
       pinta
       zoom-us
     ];
