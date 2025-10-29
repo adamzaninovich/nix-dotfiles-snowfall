@@ -13,7 +13,7 @@ in
     home = {
       packages = with pkgs; [ ];
       sessionVariables = {
-        PATH = "$HOME/.dotnet/tools:$HOME/.local/bin:$HOME/.emacs.d/bin:$PATH";
+        PATH = "$HOME/.dotnet/tools:$HOME/.local/bin:$PATH";
         CDPATH = "$HOME:$HOME/projects";
       };
     };

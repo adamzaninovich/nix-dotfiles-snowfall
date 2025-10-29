@@ -20,8 +20,9 @@
       fontSize = 10;
     };
 
+    doom-emacs.enable = true;
+
     lang.elixir.enable = false;
-    doom-emacs.enable = false;
   };
 
   programs.zsh.shellAliases.rebuild = "sudo nixos-rebuild switch";
