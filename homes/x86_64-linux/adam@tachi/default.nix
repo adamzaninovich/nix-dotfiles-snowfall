@@ -33,6 +33,9 @@
     stateVersion = "25.05";
     packages = with pkgs; [
       bambu-studio
+      imagemagick
+      pinta
+      zoom-us
     ];
   };
 

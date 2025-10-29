@@ -36,7 +36,7 @@
     # pconf = "nvim ~/.config/snowfall/homes/modules/starship.nix && home-manager switch";
     # zconf = "nvim ~/.config/snowfall/homes/modules/zsh.nix && home-manager switch";
     # nconf = "nvim ~/.config/snowfall/homes/a.zaninovich.nix && home-manager switch";
-    # cnc = "pushd ~/.config/snowfall && claude; popd";
+    cnc = "pushd ~/.config/snowfall && claude; popd";
 
     more = "less";
 
