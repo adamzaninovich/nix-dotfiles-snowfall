@@ -35,6 +35,7 @@
     stateVersion = "25.05";
     packages = with pkgs; [
       bambu-studio
+      grimblast
       kdePackages.gwenview
       imagemagick
       imv
