@@ -6,6 +6,7 @@
 
     # Git aliases
     gb = "git branch";
+    amend = "git amend --no-edit";
 
     # Shell
     c = "clear";
