@@ -12,5 +12,11 @@
     };
 
     secrets.adam-password = { neededForUsers = true; };
+
+    secrets.comic-code-fonts = {
+      sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
+      format = "binary";
+      mode = "0444";  # World-readable (as discussed)
+    };
   };
 }

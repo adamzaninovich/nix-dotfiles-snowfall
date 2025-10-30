@@ -154,7 +154,7 @@
   };
 
   # needed?
-  fonts.packages = [ ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  # fonts.packages = [ ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   environment = {
     # Enable zsh system-wide
@@ -190,6 +190,7 @@
       kdePackages.dolphin
 
       # general
+      sops
       brightnessctl
       blueman
       bluez
@@ -208,21 +209,9 @@
       whois
       dig
       gnupg
-      pika-backup
       localsend
 
       inputs.zen-browser.packages."${pkgs.system}".default
-      inputs.comic-code.packages.${pkgs.system}.default
-
-      # # Emacs with PGTK for proper Wayland support (fixes blurry text)
-      # (emacs30.override {
-      #   withPgtk = true;
-      #   withTreeSitter = true;
-      #   withWebP = true;
-      #   withSQLite3 = true;
-      # })
-      # # needed for emacs vterm compilation
-      # libtool
       nerd-fonts.symbols-only
     ];
   };

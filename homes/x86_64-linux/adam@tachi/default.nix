@@ -21,6 +21,7 @@
     };
 
     doom-emacs.enable = true;
+    comic-code-fonts.enable = true;
 
     lang.elixir.enable = false;
   };

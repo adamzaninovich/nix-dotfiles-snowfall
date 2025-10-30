@@ -33,7 +33,7 @@ in
 
       # Fonts
       nerd-fonts.symbols-only
-      inputs.comic-code.packages.${pkgs.system}.default
+      # Comic Code fonts are installed via bravo.comic-code-fonts module
 
       # Core dependencies (required by Doom)
       ripgrep # rg - hard dependency for file searches

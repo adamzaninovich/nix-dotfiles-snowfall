@@ -14,3 +14,7 @@ creation_rules:
     key_groups:
       - age:
           - *tachi
+  - path_regex: secrets/comic-code-fonts\.tar\.gz$
+    key_groups:
+      - age:
+          - *tachi

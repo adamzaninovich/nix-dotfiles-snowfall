@@ -35,11 +35,6 @@
     # mac-app-util.url = "github:hraban/mac-app-util";
 
     # figure out how to make these into packages?
-    comic-code = {
-      url = "git+ssh://git@github.com/adamzaninovich/Comic-Code.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     doom-fonts = {
       url = "git+ssh://git@github.com/adamzaninovich/fonts.git";
       inputs.nixpkgs.follows = "nixpkgs";
