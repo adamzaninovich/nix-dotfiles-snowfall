@@ -41,6 +41,7 @@
       imagemagick
       imv
       pinta
+      signal-desktop
       zoom-us
     ];
   };
