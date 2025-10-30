@@ -31,9 +31,31 @@ in
         withSQLite3 = true;
       })
 
-      libtool
+      # Fonts
       nerd-fonts.symbols-only
       inputs.comic-code.packages.${pkgs.system}.default
+
+      # Core dependencies (required by Doom)
+      ripgrep # rg - hard dependency for file searches
+      fd # faster alternative to find
+
+      # Build tools (for compiling packages like vterm)
+      cmake
+      gnumake
+      libtool
+
+      # Language-specific tools
+      jq # JSON processing
+      pandoc # Markdown preview and conversion
+      nixfmt-rfc-style # Nix formatting
+      cargo # Rust package manager
+      rustc # Rust compiler
+      shellcheck # Shell script linting
+
+      # Web development tools
+      html-tidy # HTML formatting
+      nodePackages.stylelint # CSS linting
+      nodePackages.js-beautify # JS/CSS/HTML formatting
     ];
 
     # Add doom to PATH
@@ -45,7 +67,7 @@ in
     };
 
     # Activation script to set up Doom Emacs configuration
-    home.activation.doomEmacs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.doomEmacs = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       # Function to handle Git clone operations with error handling
       clone_repo() {
         local repo="$1"
