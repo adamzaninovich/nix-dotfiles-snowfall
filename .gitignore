@@ -11,3 +11,4 @@ secrets/**/*.txt
 !secrets/**/README.md
 secrets/**/*.json.dec
 secrets/**/*.yaml.dec
+secrets/decrypted
