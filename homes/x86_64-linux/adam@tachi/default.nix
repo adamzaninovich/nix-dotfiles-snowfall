@@ -23,6 +23,8 @@
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
 
+    desktop.wayland-desktop.enable = true;
+
     lang.elixir.enable = false;
   };
 
@@ -37,6 +39,7 @@
     stateVersion = "25.05";
     packages = with pkgs; [
       bambu-studio
+      font-manager
       grimblast
       kdePackages.gwenview
       imagemagick
