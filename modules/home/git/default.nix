@@ -20,7 +20,7 @@
     userEmail = "adam.zaninovich@gmail.com";
 
     signing = {
-      key = "29E932E5BE1B8445";
+      key = "8582542578E92AC8";
       signByDefault = true;
     };
 

@@ -55,8 +55,7 @@ in
 
       # Expose GPG authentication subkey for SSH
       sshKeys = [
-        "CE83B6C2A9B82941FED98562F384045C00C25F25"
-        "59B8D2368303B94DFD08394A704284F4466F2D51"
+        "8B6927D71151F843BFE79F0D3417726F43192AD2"
       ];
       # enableScDaemon = true;
       # grabKeyboardAndMouse = false;
