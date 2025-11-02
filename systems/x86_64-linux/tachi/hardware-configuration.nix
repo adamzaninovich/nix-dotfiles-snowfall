@@ -6,8 +6,15 @@
       inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t480s
     ];
 
-  services.fwupd.enable = true;
-  services.fprintd.enable = true;
+  services = {
+    fwupd.enable = true;
+    fprintd.enable = true;
+
+    # automount usb drives
+    devmon.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
+  };
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
