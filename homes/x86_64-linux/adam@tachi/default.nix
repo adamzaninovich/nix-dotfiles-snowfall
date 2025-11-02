@@ -41,9 +41,7 @@
       bambu-studio
       font-manager
       grimblast
-      kdePackages.gwenview
       imagemagick
-      imv
       pinta
       signal-desktop
       zoom-us

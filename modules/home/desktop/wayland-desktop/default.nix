@@ -16,6 +16,7 @@ in
       waybar.enable = true;
       wofi.enable = true;
       swaync.enable = true;
+      gtk.enable = true;
     };
   };
 }

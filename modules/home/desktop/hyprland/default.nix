@@ -25,6 +25,14 @@ in
     # Enable Rose Pine theme
     bravo.desktop.theme.rosepine.enable = true;
 
+    # Reload wallpaper on activation (when running home-manager switch)
+    home.activation.reloadWallpaper = config.lib.dag.entryAfter ["linkGeneration"] ''
+      if ${pkgs.procps}/bin/pgrep -x swww-daemon > /dev/null 2>&1; then
+        echo "Reloading wallpaper..."
+        $DRY_RUN_CMD ${pkgs.swww}/bin/swww img ${cfg.wallpaperPath}
+      fi
+    '';
+
     wayland.windowManager.hyprland = {
       enable = true;
 
@@ -42,7 +50,7 @@ in
 
         # Program variables
         "$terminal" = "ghostty";
-        "$fileManager" = "dolphin";
+        "$fileManager" = "nautilus";
         "$menu" = "wofi -n";
         "$lock" = "hyprlock";
         "$wallpaper" = "~/.local/bin/wallpaper.sh";

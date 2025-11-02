@@ -187,7 +187,6 @@
       gnome-network-displays
       swaynotificationcenter
       wofi
-      kdePackages.dolphin
 
       # general
       sops
