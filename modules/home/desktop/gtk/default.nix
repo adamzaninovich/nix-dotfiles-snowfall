@@ -26,7 +26,7 @@ in
       };
 
       cursorTheme = {
-        name = "BreezeX-RosePine-Linux";
+        name = "BreezeX-RosePineDawn-Linux";
         package = pkgs.rose-pine-cursor;
         size = 24;
       };

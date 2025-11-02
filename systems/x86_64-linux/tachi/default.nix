@@ -1,4 +1,8 @@
 { config, lib, pkgs, inputs, ... }:
+
+let
+  rosepine = lib.bravo.rose_pine;
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -36,7 +40,30 @@
   # System Settings
   system.stateVersion = "25.05";
   time.timeZone = "America/Los_Angeles";
-  console.useXkbConfig = true;
+
+  # Console settings with rose-pine colors for tuigreet
+  console = {
+    useXkbConfig = true;
+    colors = [
+      rosepine.moon.base        # Darker background (was: rosepine.terminal.color0)
+      rosepine.terminal.color1
+      rosepine.terminal.color2
+      rosepine.terminal.color3
+      rosepine.terminal.color4
+      rosepine.terminal.color5
+      rosepine.terminal.color6
+      rosepine.terminal.color7
+      rosepine.terminal.color8
+      rosepine.terminal.color9
+      rosepine.terminal.color10
+      rosepine.terminal.color11
+      rosepine.terminal.color12
+      rosepine.terminal.color13
+      rosepine.terminal.color14
+      rosepine.terminal.color15
+    ];
+  };
+
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -93,11 +120,21 @@
         variant = "";
         options = "ctrl:nocaps";
       };
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
       excludePackages = [ pkgs.xterm ];
+    };
+
+    # greetd with tuigreet - lightweight TUI login manager
+    # NOTE: Consider trying regreet (GTK greeter) later for a graphical option
+    # Themed with rose-pine colors via console.colors (see above)
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-session --asterisks --greeting 'Welcome back!' --cmd Hyprland";
+          user = "greeter";
+        };
+      };
+      vt = 1;
     };
   };
 
