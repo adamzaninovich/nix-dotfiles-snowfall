@@ -164,54 +164,29 @@
       "1password/custom_allowed_browsers" = {
         text = ''
           zen
+          zen-beta
         '';
         mode = "0755";
       };
     };
 
-    # Install some additional packages
+    # Install system-level packages
     systemPackages = with pkgs; [
-      # hyprland
-      rose-pine-cursor
-      rose-pine-hyprcursor
-      nwg-look
-      waybar
-      hyprpicker
-      hyprlock
-      swww
-      pywal
-      python2
-
-      pulseaudio
+      # System services and utilities
+      pulseaudio  # CLI tools for pipewire
       networkmanager
-      gnome-network-displays
-      swaynotificationcenter
-      wofi
-
-      # general
       sops
-      brightnessctl
-      blueman
-      bluez
-      wl-clipboard
       usbutils
-
-      neofetch
-      git
-      tree
-      eza
-      neovim
       zip
       unzip
       wget
       lm_sensors
       whois
       dig
-      gnupg
-      localsend
 
-      inputs.zen-browser.packages."${pkgs.system}".default
-      nerd-fonts.symbols-only
+      # Bluetooth
+      blueman
+      bluez
     ];
   };
 }

@@ -87,6 +87,11 @@ in
     # Enable Rose Pine theme
     bravo.desktop.theme.rosepine.enable = true;
 
+    # Install waybar dependencies
+    home.packages = with pkgs; [
+      nerd-fonts.symbols-only
+    ];
+
     programs.waybar = {
       enable = true;
 

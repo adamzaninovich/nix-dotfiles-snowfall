@@ -22,7 +22,6 @@
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
-
     desktop.wayland-desktop.enable = true;
 
     lang.elixir.enable = false;
@@ -33,18 +32,16 @@
 
   home.file."Pictures/wallpaper.png".source = ../../../assets/flake-wallpaper.png;
 
-  home ={
+  home = {
     username = "adam";
     homeDirectory = "/home/adam";
     stateVersion = "25.05";
     packages = with pkgs; [
+      # Standalone applications
       bambu-studio
-      font-manager
-      grimblast
-      imagemagick
-      pinta
       signal-desktop
-      zoom-us
+      localsend
+      inputs.zen-browser.packages."${pkgs.system}".default
     ];
   };
 

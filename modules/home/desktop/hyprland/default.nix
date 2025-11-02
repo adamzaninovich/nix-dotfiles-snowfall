@@ -283,6 +283,18 @@ in
       };
     };
 
+    # Install Hyprland-related packages
+    home.packages = with pkgs; [
+      rose-pine-hyprcursor
+      hyprpicker
+      hyprlock
+      swww
+      brightnessctl
+      wl-clipboard
+      grimblast
+      imagemagick
+    ];
+
     # Hyprlock configuration
     xdg.configFile."hypr/hyprlock.conf".text = ''
       background {

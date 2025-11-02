@@ -50,34 +50,38 @@ in
         gtk-application-prefer-dark-theme = 1;
       };
 
-      gtk3.extraCss = ''
-        /* Thunar - Rosé Pine Moon Dark Theme */
-
-        /* REMOVE ALL CSS FOR NOW - TESTING */
-      '';
-
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = 1;
       };
     };
 
     home.packages = with pkgs; [
-      adwaita-icon-theme
+      # adwaita-icon-theme
       nautilus
       imv
+      nwg-look
+      pinta
+      font-manager
     ];
 
     # Set dark color scheme preference
     dconf.settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
+        gtk-theme = "rose-pine-moon";
       };
     };
 
-    # Configure XDG MIME associations for image files
+    # Ensure GTK applications can detect dark mode
+    home.sessionVariables = {
+      GTK_THEME = "rose-pine-moon:dark";
+    };
+
+    # Configure XDG MIME associations
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
+        # Image files
         "image/png" = "imv.desktop";
         "image/jpeg" = "imv.desktop";
         "image/jpg" = "imv.desktop";
@@ -86,6 +90,18 @@ in
         "image/bmp" = "imv.desktop";
         "image/tiff" = "imv.desktop";
         "image/svg+xml" = "imv.desktop";
+
+        # Web browser (Zen Browser)
+        "x-scheme-handler/http" = "zen-beta.desktop";
+        "x-scheme-handler/https" = "zen-beta.desktop";
+        "x-scheme-handler/chrome" = "zen-beta.desktop";
+        "text/html" = "zen-beta.desktop";
+        "application/x-extension-htm" = "zen-beta.desktop";
+        "application/x-extension-html" = "zen-beta.desktop";
+        "application/x-extension-shtml" = "zen-beta.desktop";
+        "application/xhtml+xml" = "zen-beta.desktop";
+        "application/x-extension-xhtml" = "zen-beta.desktop";
+        "application/x-extension-xht" = "zen-beta.desktop";
       };
     };
 

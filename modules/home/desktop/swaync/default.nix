@@ -87,11 +87,11 @@ in
               type = "toggle";
             }
             {
-              label = "";
-              command = "ghostty nmtui";
+              label = "";
+              command = "ghostty -e nmtui";
             }
             {
-              label = "";
+              label = "";
               command = "blueman-manager";
             }
             {
@@ -105,26 +105,26 @@ in
             }
             {
               label = "󰈙";
-              command = "ghostty bash -i -c 'Docs'";
+              command = "ghostty -e zsh -i -c 'Docs'";
             }
             {
-              label = "";
-              command = "ghostty bash -i -c 'Settings'";
+              label = "";
+              command = "ghostty -e zsh -i -c 'Settings'";
             }
             {
-              label = "";
-              command = "ghostty bash -i -c 'tasks'";
+              label = "";
+              command = "ghostty -e zsh -i -c 'tasks'";
             }
             {
-              label = "";
+              label = "";
               command = "hyprlock";
             }
             {
-              label = "";
+              label = "";
               command = "reboot";
             }
             {
-              label = "";
+              label = "";
               command = "shutdown now";
             }
           ];
@@ -247,7 +247,7 @@ in
 
       .control-center .notification-row .notification-background .notification .notification-content .summary,
       .floating-notifications.background .notification-background .notification .notification-content .summary {
-          font-family: 'CodeNewRoman Nerd Font Propo';
+          font-family: "SF Pro Display", "Symbols Nerd Font Mono";
           font-size: 0.9909rem;
           font-weight: 500;
       }
@@ -262,7 +262,7 @@ in
 
       .control-center .notification-row .notification-background .notification .notification-content .body,
       .floating-notifications.background .notification-background .notification .notification-content .body {
-          font-family: 'CodeNewRoman Nerd Font Propo';
+          font-family: "SF Pro Display", "Symbols Nerd Font Mono";
           font-size: 0.8891rem;
           font-weight: 400;
           margin-top: 0.310rem;
@@ -408,7 +408,7 @@ in
       }
 
       .widget-buttons-grid {
-          font-family: "CodeNewRoman Nerd Font Propo";
+          font-family: "SF Pro Display", "Symbols Nerd Font Mono";
           padding-left: 8px;
           padding-right: 8px;
           padding-bottom: 8px;
@@ -505,9 +505,10 @@ in
       }
     '';
 
-    # Install SwayNC package
+    # Install SwayNC package and related apps
     home.packages = with pkgs; [
       swaynotificationcenter
+      gnome-network-displays
     ];
   };
 }

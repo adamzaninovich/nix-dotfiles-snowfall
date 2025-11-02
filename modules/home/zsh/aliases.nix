@@ -1,6 +1,13 @@
 { config, lib, pkgs, ... }:
 {
   programs.zsh.shellAliases = {
+    Settings = "cd ~/.config/snowfall && nvim .";
+
+    # change to obsidian?
+    Docs = "cd ~/Documents && nvim .";
+
+    tasks = "btm";
+
     # Vim stuff
     vi = "vim -N";
 
@@ -23,10 +30,10 @@
     cat = lib.mkIf (pkgs ? bat) "bat";
 
     # LS aliases - conditional on eza availability (explicit commands)
-    ls = lib.mkIf (pkgs ? eza) "eza --git --grid";
-    l = lib.mkIf (pkgs ? eza) "eza --git --long";
-    la = lib.mkIf (pkgs ? eza) "eza --git --long --all";
-    tree = lib.mkIf (pkgs ? eza) "eza --git --tree";
+    ls = lib.mkIf (pkgs ? eza) "eza --git --grid --icons";
+    l = lib.mkIf (pkgs ? eza) "eza --git --long --icons";
+    la = lib.mkIf (pkgs ? eza) "eza --git --long --all --icons";
+    tree = lib.mkIf (pkgs ? eza) "eza --git --tree --icons";
 
     zipr = "zip -r"; # zip a dir
 

@@ -11,7 +11,12 @@ in
 
   config = {
     home = {
-      packages = with pkgs; [ ];
+      packages = with pkgs; [
+        bottom
+        tree
+        eza
+        neofetch
+      ];
       sessionVariables = {
         PATH = "$HOME/.dotnet/tools:$HOME/.local/bin:$PATH";
         CDPATH = "$HOME:$HOME/projects";
