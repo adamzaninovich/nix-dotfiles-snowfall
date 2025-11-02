@@ -61,7 +61,7 @@ in
         # General settings
         general = {
           gaps_in = 1;
-          gaps_out = 1;
+          gaps_out = 0;
           border_size = 1;
           "col.active_border" = mkGradient 45 [
             colors.hyprland.gold
