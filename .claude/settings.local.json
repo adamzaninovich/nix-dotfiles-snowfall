@@ -1,12 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:snowfall.org)",
-      "mcp__nixos"
+      "mcp__nixos",
+      "Bash(darwin-rebuild build:*)",
+      "Bash(nix-prefetch-url:*)",
+      "Bash(nixos-rebuild build:*)",
+      "Bash(tree:*)",
+      "WebSearch",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:rosepinetheme.com)",
+      "WebFetch(domain:search.nixos.org)",
+      "WebFetch(domain:snowfall.org)"
     ],
     "deny": [],
     "ask": []
   },
+  "outputStyle": "Learning",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "nixos"
