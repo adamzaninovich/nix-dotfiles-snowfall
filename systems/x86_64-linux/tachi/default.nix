@@ -209,10 +209,11 @@ in
 
     # Install system-level packages
     systemPackages = with pkgs; [
+      age
+      sops
       # System services and utilities
       pulseaudio  # CLI tools for pipewire
       networkmanager
-      sops
       usbutils
       zip
       unzip
