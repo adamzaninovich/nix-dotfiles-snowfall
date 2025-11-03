@@ -30,10 +30,10 @@
     cat = lib.mkIf (pkgs ? bat) "bat";
 
     # LS aliases - conditional on eza availability (explicit commands)
-    ls = lib.mkIf (pkgs ? eza) "eza --git --grid --icons";
-    l = lib.mkIf (pkgs ? eza) "eza --git --long --icons";
-    la = lib.mkIf (pkgs ? eza) "eza --git --long --all --icons";
-    tree = lib.mkIf (pkgs ? eza) "eza --git --tree --icons";
+    ls = lib.mkIf (pkgs ? eza) "eza --git --grid --icons=auto";
+    l = lib.mkIf (pkgs ? eza) "eza --git --long --icons=auto";
+    la = lib.mkIf (pkgs ? eza) "eza --git --long --all --icons=auto";
+    tree = lib.mkIf (pkgs ? eza) "eza --git --tree --icons=auto";
 
     zipr = "zip -r"; # zip a dir
 

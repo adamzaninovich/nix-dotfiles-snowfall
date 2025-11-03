@@ -103,7 +103,7 @@ in
       settings = {
         add_newline = false;
 
-        format = "[󱓞](bold bright-pink) $directory $character";
+        format = "[](bold bright-pink) $directory $character";
         right_format = "$all";
 
         character = {
