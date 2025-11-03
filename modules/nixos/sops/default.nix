@@ -1,22 +1,34 @@
-{ ... }:
+{ lib, config, ... }:
 
+let
+  cfg = config.bravo.sops;
+in
 {
-  sops = {
-    defaultSopsFile = ../../../secrets/system-secrets.yaml;
-    validateSopsFiles = false;
-
-    age = {
-      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      keyFile = "/var/lib/sops-nix/key.txt";
-      generateKey = true;
+  options.bravo.sops = {
+    keyFile = lib.mkOption {
+      type = lib.types.path;
+      default = "/home/adam/.config/sops/age/keys.txt";
+      description = "Path to the sops age key file. Use keys.txt symlink for host-agnostic config.";
     };
+  };
 
-    secrets.adam-password = { neededForUsers = true; };
+  config = {
+    sops = {
+      defaultSopsFile = ../../../secrets/system-secrets.yaml;
+      validateSopsFiles = false;
 
-    secrets.comic-code-fonts = {
-      sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
-      format = "binary";
-      mode = "0444";  # World-readable (as discussed)
+      age = {
+        # Use keys.txt symlink which points to the host-specific key
+        keyFile = cfg.keyFile;
+      };
+
+      secrets.adam-password = { neededForUsers = true; };
+
+      secrets.comic-code-fonts = {
+        sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
+        format = "binary";
+        mode = "0444";  # World-readable (as discussed)
+      };
     };
   };
 }
