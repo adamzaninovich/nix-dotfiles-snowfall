@@ -33,7 +33,6 @@
   users = {
     users.adam = {
       home = "/Users/adam";
-      hashedPasswordFile = config.sops.secrets.adam-password.path;
       shell = pkgs.zsh;
       openssh.authorizedKeys.keys = [
       ];
@@ -106,5 +105,13 @@
   # Security configuration
   security.sudo.extraConfig = ''
     %admin ALL=(ALL) NOPASSWD: ALL
+  '';
+
+  # Set user password from sops secret
+  system.activationScripts.users.text = ''
+    if [ -f "${config.sops.secrets.adam-password-macos.path}" ]; then
+      echo "Setting password for user adam..."
+      /usr/bin/dscl . -passwd /Users/adam "$(cat ${config.sops.secrets.adam-password-macos.path})"
+    fi
   '';
 }

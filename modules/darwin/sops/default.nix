@@ -12,6 +12,7 @@
     };
 
     secrets.adam-password = { };
+    secrets.adam-password-macos = { };
 
     secrets.comic-code-fonts = {
       sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
