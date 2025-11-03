@@ -64,6 +64,7 @@ in
           "sleep .5 && swww restore"
           "swaync"
           "swaync-client -df"
+          "$terminal"
         ];
 
         # General settings
