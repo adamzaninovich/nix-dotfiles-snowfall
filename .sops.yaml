@@ -10,6 +10,7 @@
 keys:
   - &master age1x4nscwmglq7fxrzhyeqnw43tw5py0cl3gcedwmxwztvxfw3f6crq0kkj8g
   - &tachi age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt
+  - &rocinante age16pwujxqarhh3hrhcswrfv9vu332grxkh84dwy46qwtg495jxlpzqzrf4ea
 
 creation_rules:
   - path_regex: secrets/system-secrets\.yaml$
@@ -17,8 +18,10 @@ creation_rules:
       - age:
           - *master
           - *tachi
+          - *rocinante
   - path_regex: secrets/comic-code-fonts\.tar\.gz$
     key_groups:
       - age:
           - *master
           - *tachi
+          - *rocinante
