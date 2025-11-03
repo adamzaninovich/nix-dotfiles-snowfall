@@ -64,6 +64,50 @@ in
       font-manager
     ];
 
+    # Create zen.desktop file for the stable zen command
+    xdg.desktopEntries.zen = {
+      name = "Zen Browser";
+      genericName = "Web Browser";
+      exec = "zen %U";
+      terminal = false;
+      categories = [ "Network" "WebBrowser" ];
+      mimeType = [
+        "text/html"
+        "text/xml"
+        "application/xhtml+xml"
+        "application/vnd.mozilla.xul+xml"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+      icon = "zen-browser";
+      startupNotify = true;
+      settings = {
+        StartupWMClass = "zen";
+      };
+      actions = {
+        new-window = {
+          name = "New Window";
+          exec = "zen --new-window %U";
+        };
+        new-private-window = {
+          name = "New Private Window";
+          exec = "zen --private-window %U";
+        };
+        profile-manager = {
+          name = "Profile Manager";
+          exec = "zen --ProfileManager";
+        };
+      };
+    };
+
+    # Hide zen-beta.desktop from application launchers
+    xdg.desktopEntries.zen-beta = {
+      name = "Zen Browser (Beta)";
+      settings = {
+        Hidden = "true";
+      };
+    };
+
     # Set dark color scheme preference
     dconf.settings = {
       "org/gnome/desktop/interface" = {
@@ -92,16 +136,16 @@ in
         "image/svg+xml" = "imv.desktop";
 
         # Web browser (Zen Browser)
-        "x-scheme-handler/http" = "zen-beta.desktop";
-        "x-scheme-handler/https" = "zen-beta.desktop";
-        "x-scheme-handler/chrome" = "zen-beta.desktop";
-        "text/html" = "zen-beta.desktop";
-        "application/x-extension-htm" = "zen-beta.desktop";
-        "application/x-extension-html" = "zen-beta.desktop";
-        "application/x-extension-shtml" = "zen-beta.desktop";
-        "application/xhtml+xml" = "zen-beta.desktop";
-        "application/x-extension-xhtml" = "zen-beta.desktop";
-        "application/x-extension-xht" = "zen-beta.desktop";
+        "x-scheme-handler/http" = "zen.desktop";
+        "x-scheme-handler/https" = "zen.desktop";
+        "x-scheme-handler/chrome" = "zen.desktop";
+        "text/html" = "zen.desktop";
+        "application/x-extension-htm" = "zen.desktop";
+        "application/x-extension-html" = "zen.desktop";
+        "application/x-extension-shtml" = "zen.desktop";
+        "application/xhtml+xml" = "zen.desktop";
+        "application/x-extension-xhtml" = "zen.desktop";
+        "application/x-extension-xht" = "zen.desktop";
       };
     };
 
@@ -110,6 +154,12 @@ in
       if [ -d "$HOME/.nix-profile/share/icons" ]; then
         $DRY_RUN_CMD ${pkgs.gtk3}/bin/gtk-update-icon-cache -f -t $HOME/.nix-profile/share/icons/* 2>/dev/null || true
       fi
+    '';
+
+    # Disable Zen Browser's default browser check
+    home.file.".zen/user.js".text = ''
+      // Don't check if Zen is the default browser
+      user_pref("browser.shell.checkDefaultBrowser", false);
     '';
   };
 }
