@@ -1,6 +1,5 @@
 .direnv
 result
-.claude
 .mcp.json
 
 # SOPS - prevent accidental commit of private keys and unencrypted secrets
