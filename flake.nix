@@ -31,14 +31,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # add when setting up darwin
-    # mac-app-util.url = "github:hraban/mac-app-util";
-
-    # figure out how to make these into packages?
-    doom-fonts = {
-      url = "git+ssh://git@github.com/adamzaninovich/fonts.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    mac-app-util.url = "github:hraban/mac-app-util";
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -69,10 +62,9 @@
         permittedInsecurePackages = [ "python-2.7.18.8" ];
       };
 
-      # how to do this with all mac users?
-      # homes.users."adam@Rocinante".modules = with inputs; [
-      #   mac-app-util.homeManagerModules.default
-      # ];
+      homes.users."adam@rocinante".modules = with inputs; [
+        mac-app-util.homeManagerModules.default
+      ];
 
       # todo: add sops
       # homes.modules = with inputs; [
@@ -81,6 +73,10 @@
 
       systems.modules.nixos = with inputs; [
         sops-nix.nixosModules.sops
+      ];
+
+      systems.modules.darwin = with inputs; [
+        sops-nix.darwinModules.sops
       ];
     };
 }

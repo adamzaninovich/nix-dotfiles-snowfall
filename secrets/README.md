@@ -12,12 +12,16 @@ This directory contains encrypted secrets managed by sops-nix.
 
 **Current Hosts:**
 - `tachi`: `~/.config/sops/age/tachi.txt` → `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
+- `rocinante`: `~/.config/sops/age/rocinante.txt` → `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
 
 ## Editing Secrets on Existing Machine
 
 On a machine that's already set up (like tachi):
 
 ```bash
+# Set the age key file (optional but recommended for clarity)
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+
 # Edit system secrets
 nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
 
@@ -25,7 +29,7 @@ nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
 nix-shell -p sops --run 'sops secrets/comic-code-fonts.tar.gz'
 ```
 
-Sops automatically uses `~/.config/sops/age/keys.txt` (which is a symlink to your host key).
+Sops automatically uses `~/.config/sops/age/keys.txt` (which is a symlink to your host key), but setting `SOPS_AGE_KEY_FILE` explicitly ensures the correct key is used.
 
 **Note**: If sops can't find your key, explicitly set the environment variable:
 ```bash
@@ -141,6 +145,7 @@ For tachi, this is already configured in the module.
 
 1. Edit the encrypted file:
    ```bash
+   export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
    nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
    ```
 
@@ -199,6 +204,7 @@ For tachi, this is already configured in the module.
 
 2. Add to encrypted secrets:
    ```bash
+   export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
    nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
    ```
 

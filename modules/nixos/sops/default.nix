@@ -27,7 +27,13 @@ in
       secrets.comic-code-fonts = {
         sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
         format = "binary";
-        mode = "0444";  # World-readable (as discussed)
+        mode = "0444";
+      };
+
+      secrets.doom-fonts = {
+        sopsFile = ../../../secrets/doom-fonts.tar.gz;
+        format = "binary";
+        mode = "0444";
       };
     };
   };

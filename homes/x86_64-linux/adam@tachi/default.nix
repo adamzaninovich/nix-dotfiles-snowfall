@@ -5,6 +5,7 @@
   bravo = {
     zsh.enable = true;
     bat.enable = true;
+    direnv.enable = true;
     neovim.enable = true;
     claude.enable = true;
 
