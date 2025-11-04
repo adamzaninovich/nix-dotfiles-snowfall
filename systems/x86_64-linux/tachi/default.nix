@@ -166,8 +166,7 @@ in
       extraGroups = [ "wheel" "networkmanager" "docker" ];
       shell = pkgs.zsh;
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBR/LutmCpH+8nq28MOQHhqGO0DzUol6AezcofX4cFPD openpgp:0x72A8654C"
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1leExad18ykHxcnp7WXNzloBSnaZ+VVk9G7yTJeq5hj0n4PsM6Q4u7VzLPL5zIHU6GiD40Fq2iB2qJVCw8ZOKPtZ2xwWwK26rZrfi+2YHkUFG4XhfKBW0FNYPOrVnUSH73lpqLokVKDRPBDRhcXcSD5WHFGB5dVz2jgASp7G5kRCdG8I4R/ksCDF7jJyZY/vPEeC/6Yd90aeDYdqfVtyhtfburNAsYM+Pbm0r/Sxq2UHWDzqgcQlE52Xjv3G2PiUyuqhQCXDc669jwi65R+syT2m/ERiezctuiEVN/BRyZxUleKZMiVKOJY3cYCtb+tWLWYkTbT7AKYxxAetKGpqT openpgp:0x6131E5A3"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEo1NeINAvhbxEuhy/JPMs5gkgsyQfw4LBfKrBTvL4YX openpgp:0xA99A403B"
       ];
     };
   };
