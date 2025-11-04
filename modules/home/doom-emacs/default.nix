@@ -20,8 +20,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Enable doom-fonts module
-    bravo.doom-fonts.enable = pkgs.stdenv.isLinux;
+    # Enable doom-fonts module (decrypts on activation)
+    bravo.doom-fonts.enable = true;
 
     home.packages = with pkgs; [
       # Platform-specific Emacs builds

@@ -30,15 +30,8 @@ in
         sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
         format = "binary";
         mode = "0444";
-        path = "/var/lib/secrets/comic-code-fonts";  # Use persistent storage for large files
+        path = "/var/lib/secrets/comic-code-fonts";
       };
-
-      # secrets.doom-fonts = {
-      #   sopsFile = ../../../secrets/doom-fonts.tar.gz;
-      #   format = "binary";
-      #   mode = "0444";
-      #   path = "/var/lib/secrets/doom-fonts";  # Use persistent storage for large files
-      # };
     };
   };
 }
