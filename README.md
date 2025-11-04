@@ -15,11 +15,19 @@ Personal NixOS and macOS system configuration using [Snowfall Lib](https://snowf
 - **Modular**: Composable modules with `bravo.*` namespace
 - **Declarative**: Immutable users, reproducible builds
 
-### Desktop (Linux)
+### Desktop
+
+**Linux (Wayland):**
 - Hyprland window manager with Wayland
 - Waybar status bar
 - Wofi launcher
 - SwayNC notifications
+- Rosé Pine Moon theme
+
+**macOS:**
+- AeroSpace tiling window manager
+- SketchyBar status bar
+- Window borders
 - Rosé Pine Moon theme
 
 ### Development Tools

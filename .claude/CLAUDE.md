@@ -87,14 +87,24 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 
 ### Current Module Inventory
 
-**Desktop Environment** (`modules/home/desktop/` - Linux only):
+**Desktop Environment** (`modules/home/desktop/`):
+
+**Wayland (Linux only):**
 - `bravo.desktop.wayland` - Meta-module enabling complete Hyprland environment
-- `bravo.desktop.hyprland` - Hyprland window manager + hyprlock
+- `bravo.desktop.wayland.hyprland` - Hyprland window manager + hyprlock
+- `bravo.desktop.wayland.waybar` - Waybar status bar
+- `bravo.desktop.wayland.wofi` - Wofi application launcher
+- `bravo.desktop.wayland.swaync` - SwayNC notification daemon
+
+**macOS:**
+- `bravo.desktop.macos` - Meta-module enabling complete macOS desktop environment with AeroSpace
+- `bravo.desktop.macos.aerospace` - AeroSpace tiling window manager
+- `bravo.desktop.macos.sketchybar` - SketchyBar status bar
+- `bravo.desktop.macos.borders` - Window borders
+
+**Theme & UI (Cross-platform):**
 - `bravo.desktop.theme.rosepine` - Rosé Pine Moon color scheme (read-only option, colors available via lib everywhere)
-- `bravo.desktop.waybar` - Status bar
-- `bravo.desktop.wofi` - Application launcher
-- `bravo.desktop.swaync` - Notification daemon
-- `bravo.desktop.gtk` - GTK theme
+- `bravo.desktop.gtk` - GTK theme (Linux only)
 
 **Development Tools** (`modules/home/` - Cross-platform):
 - `bravo.zsh` - Shell with aliases
