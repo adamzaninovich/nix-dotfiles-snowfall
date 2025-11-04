@@ -1,21 +1,9 @@
 { pkgs, inputs, config, ... }:
 
 {
-  # Determinate Nix manages the daemon, nix-darwin manages the config
-  nix = {
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      warn-dirty = false;
-    };
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 2; Minute = 0; };
-      options = "--delete-older-than 7d";
-    };
-  };
+  # Determinate Nix manages the daemon completely
+  # Configure Nix settings via Determinate instead of nix-darwin
+  nix.enable = false;
 
   nixpkgs = {
     config = {
@@ -106,13 +94,5 @@
   # Security configuration
   security.sudo.extraConfig = ''
     %admin ALL=(ALL) NOPASSWD: ALL
-  '';
-
-  # Set user password from sops secret
-  system.activationScripts.users.text = ''
-    if [ -f "${config.sops.secrets.adam-password-macos.path}" ]; then
-      echo "Setting password for user adam..."
-      /usr/bin/dscl . -passwd /Users/adam "$(cat ${config.sops.secrets.adam-password-macos.path})"
-    fi
   '';
 }

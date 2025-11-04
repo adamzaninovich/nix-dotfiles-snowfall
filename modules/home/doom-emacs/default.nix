@@ -1,4 +1,4 @@
-{ lib, config, pkgs, inputs, ... }:
+{ lib, config, pkgs, ... }:
 with lib;
 let
   cfg = config.bravo.doom-emacs;
@@ -20,9 +20,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      inputs.doom-fonts.packages.${pkgs.system}.all-fonts
+    # Enable doom-fonts module
+    bravo.doom-fonts.enable = pkgs.stdenv.isLinux;
 
+    home.packages = with pkgs; [
       # Platform-specific Emacs builds
       (if pkgs.stdenv.isDarwin then
         # macOS: Custom build with patches for Sequoia compatibility

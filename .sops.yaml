@@ -25,3 +25,9 @@ creation_rules:
           - *master
           - *tachi
           - *rocinante
+  - path_regex: secrets/doom-fonts\.tar\.gz$
+    key_groups:
+      - age:
+          - *master
+          - *tachi
+          - *rocinante
