@@ -9,8 +9,13 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 **Current Systems**:
 - `tachi` - NixOS x86_64-linux with Hyprland desktop environment
 - `rocinante` - macOS aarch64-darwin with nix-darwin
+- `pallas` - macOS aarch64-darwin work laptop (nix-darwin)
 
 ## Quick Reference
+
+**Home Manager API Notes**:
+- Use `programs.zsh.initContent` instead of deprecated `programs.zsh.initExtra`
+- Both accept the same values (strings, mkMerge, mkOrder), but initContent is the current API
 
 **Build Commands**:
 ```bash

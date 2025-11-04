@@ -1,0 +1,184 @@
+{ pkgs, inputs, lib, ... }:
+{
+  fonts.fontconfig.enable = true;
+
+  bravo = {
+    zsh.enable = true;
+    bat.enable = true;
+    direnv.enable = true;
+    neovim.enable = true;
+    claude.enable = true;
+
+    gpg = {
+      enable = true;
+      autostart = true;
+      pinentry = pkgs.pinentry_mac;
+    };
+
+    ghostty = {
+      enable = true;
+      installPackage = false; # Install manually on macOS
+      fontSize = 14;
+    };
+
+    doom-emacs.enable = true;
+    comic-code-fonts.enable = true;
+    desktop.macos.enable = false;
+
+    lang.elixir.enable = true;
+  };
+
+  programs.ssh.enable = true;
+
+  home = {
+    username = "a.zaninovich";
+    homeDirectory = "/Users/a.zaninovich";
+    stateVersion = "25.05";
+    packages = with pkgs; [
+      # Work-specific packages
+      dotnet-sdk_8
+      kubectl
+      opencv
+      postgresql_16
+
+      # macOS-specific packages
+      age
+      sops
+      localsend
+      coreutils
+      coreutils-prefixed
+      gawk
+      gdu
+      gh
+      gh-dash
+      glibtool
+      lazygit
+      nodejs_22
+      python314
+      rustup
+      shellcheck
+      stow
+    ];
+
+    sessionVariables = {
+      CLAUDE_CODE_USE_BEDROCK = "1";
+      AWS_PROFILE = "REDACTED_PROFILE";
+    };
+
+    # Install AWS CIA login script
+    file.".local/bin/aws-cia-login.exp" = {
+      text = ''
+        #!/usr/bin/expect -f
+
+        # Set encoding to UTF-8
+        fconfigure stdout -encoding utf-8
+        fconfigure stderr -encoding utf-8
+
+        # Get username and password from macOS keychain
+        set username [exec sh -c "security find-generic-password -a aws-cia -s username -w 2>/dev/null || echo \"\""]
+        set password [exec sh -c "security find-generic-password -a aws-cia -s password -w 2>/dev/null || echo \"\""]
+
+        # Check if environment variables are set
+        if {$username eq "" || $password eq ""} {
+          puts "Error: AWS credentials not found in keychain"
+          puts "Run 'aws-setup' to store your credentials securely"
+          exit 1
+        }
+        set timeout 30
+
+        # Start the aws-cia login command
+        spawn aws-cia login
+
+        # Handle username prompt
+        expect "Enter Username:" {
+          send "$username\r"
+        }
+
+        # Handle password prompt
+        expect "Enter your password:" {
+          send "$password\r"
+        }
+
+        # Wait for login success
+        expect "Login Successful."
+
+        # Wait for the Duo code prompt and extract the 3-digit code
+        expect -re "Enter 3 digit Duo code in app: (\[0-9\]{3})" {
+          set duo_code $expect_out(1,string)
+          puts ""
+          # Copy duo code to clipboard
+          exec echo -n $duo_code | pbcopy
+          puts "Waiting for MFA completion..."
+        }
+
+        # Wait for MFA success
+        expect "MFA Successful."
+
+        # Handle role selection - look for REDACTED_ROLE and select it
+        expect {
+          -re "(\[0-9\]+)\. REDACTED_ROLE" {
+            set role_number $expect_out(1,string)
+            puts "Found REDACTED_ROLE as option $role_number"
+          }
+        }
+
+        expect "Choose your role:" {
+          send "$role_number\r"
+        }
+
+        # Wait for final success message
+        expect "Credentials updated successfully. Enjoy your AWS sessions!"
+
+        puts "\nAWS login completed successfully!"
+      '';
+      executable = true;
+    };
+  };
+
+  # AWS login functions for zsh
+  programs.zsh.initContent = lib.mkMerge [
+    # AWS functions
+    (lib.mkOrder 975 ''
+      aws-login() {
+        ~/.local/bin/aws-cia-login.exp
+      }
+
+      aws-setup() {
+        local existing_username
+        existing_username="$(security find-generic-password -a aws-cia -s username -w 2>/dev/null)"
+
+        if [[ -z "$existing_username" ]]; then
+          echo -n "Enter AWS CIA username: "
+          read username
+
+          security add-generic-password -a aws-cia -s username -w "$username" 2>/dev/null
+          echo "Username stored in keychain."
+        else
+          echo "Using existing username: $existing_username"
+        fi
+
+        echo -n "Enter AWS CIA password: "
+        read -s password
+        echo
+
+        security delete-generic-password -a aws-cia -s password &>/dev/null || true
+        security add-generic-password -a aws-cia -s password -w "$password" &>/dev/null
+
+        echo "Password updated in keychain."
+        echo "You can now use 'aws-login' command."
+      }
+    '')
+  ];
+
+  launchd.agents.wheee = {
+    enable = true;
+    config = {
+      ProgramArguments = [ "/usr/bin/caffeinate" "-disu" ];
+      RunAtLoad = true;
+      KeepAlive = true;
+      ProcessType = "Background";
+    };
+  };
+
+  programs.home-manager.enable = true;
+}
