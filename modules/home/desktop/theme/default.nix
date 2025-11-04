@@ -4,7 +4,6 @@ with lib;
 
 let
   cfg = config.bravo.desktop.theme;
-
   rosepine = lib.bravo.rose_pine;
 
   # Color values - always available regardless of enable state

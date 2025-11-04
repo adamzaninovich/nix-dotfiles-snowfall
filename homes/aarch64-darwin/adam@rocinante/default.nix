@@ -23,6 +23,7 @@
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
+    desktop.macos.enable = true;
 
     lang.elixir.enable = true;
   };

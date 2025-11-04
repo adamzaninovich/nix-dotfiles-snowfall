@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.bravo.desktop.wofi;
+  cfg = config.bravo.desktop.wayland.wofi;
   colors = config.bravo.desktop.theme.rosepine.colors;
 
   # Common CSS base with Rose Pine colors
@@ -121,7 +121,7 @@ let
 
 in
 {
-  options.bravo.desktop.wofi = {
+  options.bravo.desktop.wayland.wofi = {
     enable = mkEnableOption "Wofi application launcher";
   };
 

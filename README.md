@@ -248,7 +248,7 @@ All custom modules use the `bravo` namespace:
 
 ```nix
 # Enable modules in home configuration
-bravo.desktop.wayland-desktop.enable = true;  # Meta-module (enables hyprland, waybar, etc)
+bravo.desktop.wayland.enable = true;  # Meta-module (enables hyprland, waybar, etc)
 bravo.zsh.enable = true;
 bravo.neovim.enable = true;
 bravo.doom-emacs.enable = true;

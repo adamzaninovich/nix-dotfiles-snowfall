@@ -23,7 +23,7 @@
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
-    desktop.wayland-desktop.enable = true;
+    desktop.wayland.enable = true;
 
     lang.elixir.enable = false;
   };

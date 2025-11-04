@@ -3,12 +3,12 @@
 with lib;
 
 let
-  cfg = config.bravo.desktop.swaync;
+  cfg = config.bravo.desktop.wayland.swaync;
   colors = config.bravo.desktop.theme.rosepine.colors;
 
 in
 {
-  options.bravo.desktop.swaync = {
+  options.bravo.desktop.wayland.swaync = {
     enable = mkEnableOption "SwayNC notification daemon";
   };
 

@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.bravo.desktop.hyprland;
+  cfg = config.bravo.desktop.wayland.hyprland;
   colors = config.bravo.desktop.theme.rosepine.colors;
 
   # Helper to convert color list to Hyprland gradient format
@@ -11,7 +11,7 @@ let
     builtins.concatStringsSep " " colorList + " ${toString angle}deg";
 in
 {
-  options.bravo.desktop.hyprland = {
+  options.bravo.desktop.wayland.hyprland = {
     enable = mkEnableOption "Hyprland window manager with hyprlock";
 
     wallpaperPath = mkOption {

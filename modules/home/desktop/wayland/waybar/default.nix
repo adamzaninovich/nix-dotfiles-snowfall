@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.bravo.desktop.waybar;
+  cfg = config.bravo.desktop.wayland.waybar;
   colors = config.bravo.desktop.theme.rosepine.colors;
 
   # Colorpicker script (pywal dependency removed)
@@ -79,7 +79,7 @@ let
 
 in
 {
-  options.bravo.desktop.waybar = {
+  options.bravo.desktop.wayland.waybar = {
     enable = mkEnableOption "Waybar status bar";
   };
 

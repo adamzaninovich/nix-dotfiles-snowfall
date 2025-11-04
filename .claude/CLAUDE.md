@@ -83,12 +83,12 @@ Snowfall Lib uses **automatic discovery** based on directory structure. The file
 All custom modules use the `bravo` namespace (configured in `flake.nix` as `snowfall.namespace = "bravo"`):
 - Modules create options: `options.bravo.<module-name>.enable`
 - Modules are composable - meta-modules enable sub-modules
-- Example: `bravo.desktop.wayland-desktop.enable = true` enables hyprland, waybar, wofi, swaync, gtk
+- Example: `bravo.desktop.wayland.enable = true` enables hyprland, waybar, wofi, swaync, gtk
 
 ### Current Module Inventory
 
 **Desktop Environment** (`modules/home/desktop/` - Linux only):
-- `bravo.desktop.wayland-desktop` - Meta-module enabling complete Hyprland environment
+- `bravo.desktop.wayland` - Meta-module enabling complete Hyprland environment
 - `bravo.desktop.hyprland` - Hyprland window manager + hyprlock
 - `bravo.desktop.theme.rosepine` - Rosé Pine Moon color scheme (read-only option, colors available via lib everywhere)
 - `bravo.desktop.waybar` - Status bar

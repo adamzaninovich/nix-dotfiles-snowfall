@@ -30,9 +30,7 @@ in
 
     services.gpg-agent = {
       enable = cfg.enable;
-      verbose = true;
       enableSshSupport = true;
-      enableExtraSocket = cfg.enableExtraSocket;
       enableZshIntegration = config.programs.zsh.enable;
       pinentry.package = cfg.pinentry;
 
@@ -41,7 +39,7 @@ in
       maxCacheTtl = 86400; # 24 hours
 
       # Disable grab on macOS to allow pinentry-mac keychain integration
-      grabKeyboardAndMouse = !pkgs.stdenv.isDarwin;
+      # grabKeyboardAndMouse = !pkgs.stdenv.isDarwin;
 
       # Expose GPG authentication subkey for SSH
       sshKeys = [
