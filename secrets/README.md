@@ -27,6 +27,12 @@ nix-shell -p sops --run 'sops secrets/comic-code-fonts.tar.gz'
 
 Sops automatically uses `~/.config/sops/age/keys.txt` (which is a symlink to your host key).
 
+**Note**: If sops can't find your key, explicitly set the environment variable:
+```bash
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
+```
+
 ## Setting Up a New Machine
 
 ### 1. On the New Machine
@@ -86,19 +92,22 @@ cp /path/to/master.txt ~/.config/sops/age/master.txt
 cd ~/.config/sops/age
 ln -sf master.txt keys.txt
 
+# Set environment variable so sops can find the key
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+
 # Reencrypt all secrets to include the new host key
+cd ~/.config/snowfall
 nix-shell -p sops --run 'sops updatekeys secrets/system-secrets.yaml'
 nix-shell -p sops --run 'sops updatekeys secrets/comic-code-fonts.tar.gz'
 
 # Commit and push the reencrypted files
-cd ~/.config/snowfall
 git add secrets/
 git commit -m "Add newhost to secrets encryption"
 git push
 
 # Clean up: restore symlink to your host key
 cd ~/.config/sops/age
-ln -sf tachi.txt keys.txt  # Or whatever your host is
+ln -sf tachi.txt keys.txt  # Or whatever your host is (or newhost.txt if on new host)
 rm master.txt
 ```
 
