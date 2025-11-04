@@ -103,7 +103,7 @@ in
       settings = {
         add_newline = false;
 
-        format = "[](bold bright-pink) $directory $character";
+        format = "[${if pkgs.stdenv.isDarwin then "" else ""}](bold red) $directory $character";
         right_format = "$all";
 
         character = {
@@ -144,7 +144,7 @@ in
         directory = {
           read_only = "  ";
           format = "[$path]($style)[$read_only]($read_only_style)";
-          style = "bold bright-blue";
+          style = "bold green";
           truncation_length = 1;
         };
 
