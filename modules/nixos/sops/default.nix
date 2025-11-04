@@ -29,12 +29,6 @@ in
         format = "binary";
         mode = "0444";
       };
-
-      secrets.doom-fonts = {
-        sopsFile = ../../../secrets/doom-fonts.tar.gz;
-        format = "binary";
-        mode = "0444";
-      };
     };
   };
 }
