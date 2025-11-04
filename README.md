@@ -5,7 +5,8 @@ Personal NixOS and macOS system configuration using [Snowfall Lib](https://snowf
 ## Systems
 
 - **tachi** - NixOS x86_64-linux with Hyprland desktop environment
-- **rocinante** - macOS aarch64-darwin with nix-darwin
+- **rocinante** - macOS aarch64-darwin personal laptop
+- **pallas** - macOS aarch64-darwin work laptop
 
 ## Features
 
@@ -96,6 +97,7 @@ On any machine with access to the repository:
      - &master age1x4nscwmglq7fxrzhyeqnw43tw5py0cl3gcedwmxwztvxfw3f6crq0kkj8g
      - &tachi age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt
      - &rocinante age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h
+     - &pallas age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a
      - &newhost <your-public-key>  # Add your new host's public key
    ```
 
@@ -203,7 +205,7 @@ sudo nixos-rebuild switch --flake ~/.config/snowfall#tachi    # Build and switch
 sudo nixos-rebuild test --flake ~/.config/snowfall#tachi      # Test without switching
 ```
 
-**Darwin (rocinante):**
+**Darwin (rocinante/pallas):**
 ```bash
 darwin-rebuild switch --flake ~/.config/snowfall#rocinante    # Build and switch
 darwin-rebuild build --flake ~/.config/snowfall#rocinante     # Build without switching
@@ -242,7 +244,7 @@ See `secrets/README.md` for detailed SOPS setup and troubleshooting.
 │   └── aarch64-darwin/
 ├── modules/               # Modules (auto-applied based on system type)
 │   ├── nixos/            # NixOS-only modules
-│   ├── darwin/           # Darwin-only modules
+│   ├── darwin/           # Darwin-only modules (macos-defaults, sops)
 │   └── home/             # Cross-platform home modules
 ├── packages/              # Custom packages (auto-exported)
 ├── overlays/              # Overlays (auto-applied)
