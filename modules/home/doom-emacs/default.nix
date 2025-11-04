@@ -23,13 +23,39 @@ in
     home.packages = with pkgs; [
       inputs.doom-fonts.packages.${pkgs.system}.all-fonts
 
-      # Emacs with PGTK for proper Wayland support (fixes blurry text)
-      (emacs30.override {
-        withPgtk = true;
-        withTreeSitter = true;
-        withWebP = true;
-        withSQLite3 = true;
-      })
+      # Platform-specific Emacs builds
+      (if pkgs.stdenv.isDarwin then
+        # macOS: Custom build with patches for Sequoia compatibility
+        (emacs30.override {
+          withNativeCompilation = false; # Required for macOS Sequoia 15.4+ due to security restrictions
+          withTreeSitter = true;
+          withWebP = true;
+          withSQLite3 = true;
+        }).overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [
+            (pkgs.fetchpatch {
+              url = "https://raw.githubusercontent.com/d12frosted/homebrew-emacs-plus/refs/heads/master/patches/emacs-30/round-undecorated-frame.patch";
+              sha256 = "uYIxNTyfbprx5mCqMNFVrBcLeo+8e21qmBE3lpcnd+4=";
+            })
+            (pkgs.fetchpatch {
+              url = "https://raw.githubusercontent.com/d12frosted/homebrew-emacs-plus/refs/heads/master/patches/emacs-30/system-appearance.patch";
+              sha256 = "3QLq91AQ6E921/W9nfDjdOUWR8YVsqBAT/W9c1woqAw=";
+            })
+            (pkgs.fetchpatch {
+              url = "https://raw.githubusercontent.com/d12frosted/homebrew-emacs-plus/refs/heads/master/patches/emacs-28/fix-window-role.patch";
+              sha256 = "sha256-+z/KfsBm1lvZTZNiMbxzXQGRTjkCFO4QPlEK35upjsE=";
+            })
+          ];
+        })
+      else
+        # Linux: PGTK for proper Wayland support (fixes blurry text)
+        emacs30.override {
+          withPgtk = true;
+          withTreeSitter = true;
+          withWebP = true;
+          withSQLite3 = true;
+        }
+      )
 
       # Fonts
       nerd-fonts.symbols-only
@@ -48,9 +74,8 @@ in
       jq # JSON processing
       pandoc # Markdown preview and conversion
       nixfmt-rfc-style # Nix formatting
-      cargo # Rust package manager
-      rustc # Rust compiler
       shellcheck # Shell script linting
+      rustup # Rust
 
       # Web development tools
       html-tidy # HTML formatting

@@ -5,6 +5,7 @@
   bravo = {
     zsh.enable = true;
     bat.enable = true;
+    direnv.enable = true;
     neovim.enable = true;
     claude.enable = true;
 
@@ -16,17 +17,16 @@
 
     ghostty = {
       enable = true;
-      installPackage = false;  # Install via Homebrew or manually on macOS
-      fontSize = 13;
+      installPackage = false; # Install manually on macOS
+      fontSize = 14;
     };
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
 
-    lang.elixir.enable = false;
+    lang.elixir.enable = true;
   };
 
-  programs.zsh.shellAliases.rebuild = "darwin-rebuild switch --flake ~/.config/snowfall#rocinante";
   programs.ssh.enable = true;
 
   home = {
@@ -34,7 +34,26 @@
     homeDirectory = "/Users/adam";
     stateVersion = "25.05";
     packages = with pkgs; [
+      # rocinante only
+      ntfs3g
       # macOS-specific packages
+      age
+      sops
+      localsend
+      coreutils
+      coreutils-prefixed
+      gawk
+      gdu
+      gh
+      gh-dash
+      glibtool
+      lazygit
+      nodejs_22
+      python314
+      rustup
+      shellcheck
+      # shottr
+      stow
     ];
   };
 

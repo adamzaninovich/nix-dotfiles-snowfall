@@ -1,6 +1,7 @@
 { pkgs, inputs, config, ... }:
 
 {
+  # Determinate Nix manages the daemon, nix-darwin manages the config
   nix = {
     settings = {
       experimental-features = [
