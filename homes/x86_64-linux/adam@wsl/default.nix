@@ -37,7 +37,6 @@
       wslu
 
       # Development tools
-      neovim
       autoconf
       automake
       cmake
