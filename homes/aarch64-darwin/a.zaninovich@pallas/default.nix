@@ -64,6 +64,7 @@
 
     sessionVariables = {
       CLAUDE_CODE_USE_BEDROCK = "1";
+      SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
     };
   };
 

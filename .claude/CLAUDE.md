@@ -8,6 +8,7 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 
 **Current Systems**:
 - `tachi` - NixOS x86_64-linux with Hyprland desktop environment
+- `wsl` - NixOS x86_64-linux running in Windows 11 WSL2
 - `rocinante` - macOS aarch64-darwin with nix-darwin
 - `pallas` - macOS aarch64-darwin work laptop (nix-darwin)
 
@@ -21,6 +22,9 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 ```bash
 # NixOS (tachi)
 sudo nixos-rebuild switch --flake .#tachi
+
+# NixOS WSL (wsl)
+sudo nixos-rebuild switch --flake .#wsl
 
 # macOS (rocinante)
 darwin-rebuild switch --flake .#rocinante
@@ -191,6 +195,7 @@ home-manager switch --flake .#adam@rocinante
 
 **Current Host Keys**:
 - `tachi`: `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
+- `wsl`: `age1dj7j53uh0nu25v0yxrfvgsufuzjqwpghtnusaguur56cv8522y2s27n0r0`
 - `rocinante`: `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
 - `pallas`: `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`
 
@@ -588,6 +593,15 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Users: `mutableUsers = false` - all user management is declarative
 - SSH: enabled, password auth disabled, key-based only
 - Security: Passwordless sudo for adam
+
+**wsl** (NixOS x86_64-linux):
+- Platform: Windows 11 WSL2 (nixos-wsl)
+- Docker: Docker Desktop integration enabled
+- Network: Custom DNS (10.1.1.8, 10.1.1.9), interop enabled
+- Users: `mutableUsers = false` - declarative user management with SOPS password
+- SSH: enabled, password auth disabled, key-based only, start-on-demand
+- Security: Passwordless sudo for adam, SSH_AUTH_SOCK preserved
+- Shell: zsh with development tools (Elixir, Neovim, Doom Emacs)
 
 **rocinante** (macOS aarch64-darwin):
 - Personal macOS laptop
