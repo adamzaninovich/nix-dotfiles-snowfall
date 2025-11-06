@@ -39,7 +39,7 @@ in
         macos-icon = "paper";
 
         mouse-hide-while-typing = true;
-        background-opacity = 0.9;
+        background-opacity = 0.95;
         background-blur-radius = 20;
 
         keybind = [
