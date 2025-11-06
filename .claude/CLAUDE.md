@@ -121,13 +121,16 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 - `bravo.doom-emacs` - Doom Emacs
 - `bravo.doom-fonts` - Doom Emacs fonts
 - `bravo.ghostty` - Terminal emulator (config only on macOS; package + config on Linux)
-- `bravo.git` - Git config
 - `bravo.gpg` - GPG + agent
 - `bravo.bat` - Better cat
 - `bravo.direnv` - direnv integration
 - `bravo.claude` - Claude Code CLI
 - `bravo.comic-code-fonts` - Comic Code font (uses SOPS for font files)
 - `bravo.lang.elixir` - Elixir environment
+- `bravo.ssh` - SSH configuration
+
+**Always-On Modules** (No enable option, auto-applied to all home configs):
+- `git` - Git and GitHub CLI configuration (applies everywhere, no `bravo.git.enable` needed)
 
 **System Modules** (Auto-applied, not namespaced):
 - `modules/nixos/sops` - SOPS secrets for NixOS (uses upstream `sops.*` options)
