@@ -4,6 +4,7 @@
 
   bravo = {
     zsh.enable = true;
+    ssh.enable = true;
     bat.enable = true;
     direnv.enable = true;
     neovim.enable = true;
@@ -29,7 +30,6 @@
   };
 
   programs.zsh.shellAliases.rebuild = "sudo nixos-rebuild switch";
-  programs.ssh.enable = true;
 
   home.file."Pictures/wallpaper.png".source = ../../../assets/flake-wallpaper.png;
 

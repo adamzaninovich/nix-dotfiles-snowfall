@@ -4,6 +4,7 @@
 
   bravo = {
     zsh.enable = true;
+    ssh.enable = true;
     bat.enable = true;
     direnv.enable = true;
     neovim.enable = true;
@@ -27,8 +28,6 @@
 
     lang.elixir.enable = true;
   };
-
-  programs.ssh.enable = true;
 
   home = {
     username = "adam";

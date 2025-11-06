@@ -4,6 +4,7 @@
 
   bravo = {
     zsh.enable = true;
+    ssh.enable = true;
     bat.enable = true;
     direnv.enable = true;
     neovim.enable = true;
@@ -30,8 +31,6 @@
     # Work-specific modules
     dk.aws-cia.enable = true;
   };
-
-  programs.ssh.enable = true;
 
   home = {
     username = "a.zaninovich";

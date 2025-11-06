@@ -6,6 +6,7 @@
   # Bravo modules
   bravo = {
     bat.enable = true;
+    ssh.enable = true;
     claude.enable = true;
     comic-code-fonts.enable = true;
     direnv.enable = true;
@@ -24,7 +25,6 @@
     rebuild-test = "sudo nixos-rebuild test --flake ~/.config/snowfall#wsl";
   };
 
-  programs.ssh.enable = true;
   programs.home-manager.enable = true;
 
   # Home Manager settings
