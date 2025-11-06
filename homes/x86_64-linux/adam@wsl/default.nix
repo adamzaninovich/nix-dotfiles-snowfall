@@ -12,7 +12,6 @@
     direnv.enable = true;
     doom-emacs.enable = true;
     doom-fonts.enable = true;
-    git.enable = true;
     gpg.enable = true;
     lang.elixir.enable = true;
     neovim.enable = true;
