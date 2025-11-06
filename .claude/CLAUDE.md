@@ -9,8 +9,13 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 **Current Systems**:
 - `tachi` - NixOS x86_64-linux with Hyprland desktop environment
 - `rocinante` - macOS aarch64-darwin with nix-darwin
+- `pallas` - macOS aarch64-darwin work laptop (nix-darwin)
 
 ## Quick Reference
+
+**Home Manager API Notes**:
+- Use `programs.zsh.initContent` instead of deprecated `programs.zsh.initExtra`
+- Both accept the same values (strings, mkMerge, mkOrder), but initContent is the current API
 
 **Build Commands**:
 ```bash
@@ -123,6 +128,7 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 **System Modules** (Auto-applied, not namespaced):
 - `modules/nixos/sops` - SOPS secrets for NixOS (uses upstream `sops.*` options)
 - `modules/darwin/sops` - SOPS secrets for Darwin (uses upstream `sops.*` options)
+- `modules/darwin/macos-defaults` - Shared macOS system defaults (dock, finder, trackpad, etc.) with `lib.mkDefault` for per-system overrides
 
 **Packages** (`packages/`):
 - `claude-code` - Claude Code package
@@ -186,6 +192,7 @@ home-manager switch --flake .#adam@rocinante
 **Current Host Keys**:
 - `tachi`: `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
 - `rocinante`: `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
+- `pallas`: `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`
 
 **Common Commands**:
 ```bash
@@ -528,11 +535,19 @@ homes.users."adam@rocinante".modules = with inputs; [
 
 This enables proper macOS app integration for Nix-installed applications (Spotlight, LaunchPad, etc.).
 
-**Darwin System Defaults**:
-Configure macOS system preferences in `systems/aarch64-darwin/rocinante/default.nix` using `system.defaults.*` options. See [nix-darwin options](https://daiderd.com/nix-darwin/manual/index.html#sec-options) for available settings.
+**Shared Darwin Defaults**:
+Common macOS system preferences are configured in `modules/darwin/macos-defaults/` and auto-apply to all darwin systems. Settings include:
+- Dock configuration (autohide, hot corners, tile size)
+- Finder preferences (show extensions, path bar, status bar)
+- Trackpad settings (tap-to-click, three-finger drag)
+- Global settings (dark mode, screenshots to ~/Workspace)
+- Documentation and man pages enabled
+- Passwordless sudo for admin group
+
+All settings use `lib.mkDefault` so they can be overridden per-system by setting them directly in system configs. See [nix-darwin options](https://daiderd.com/nix-darwin/manual/index.html#sec-options) for available settings.
 
 **Determinate Nix**:
-The rocinante system uses Determinate Nix installer, which manages the nix daemon. Therefore, `nix.enable = false` is set in the Darwin configuration to prevent conflicts.
+All darwin systems use Determinate Nix installer, which manages the nix daemon. Therefore, `nix.enable = false` is set in the shared darwin defaults to prevent conflicts.
 
 ## Important Snowfall Conventions
 
@@ -575,11 +590,16 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Security: Passwordless sudo for adam
 
 **rocinante** (macOS aarch64-darwin):
-- Nix management: Determinate Nix (nix-darwin's `nix.enable = false`)
-- System defaults: Dark mode, dock autohide, trackpad tap-to-click
-- Screenshots: saved to `~/Workspace` as PNG
-- Hot corners: Mission Control (TL), Quick Note (TR), Launchpad (BL), Desktop (BR)
-- Security: Passwordless sudo for admin group
+- Personal macOS laptop
+- Nix management: Determinate Nix
+- Shared darwin defaults auto-applied via `modules/darwin/macos-defaults`
+- System config: Minimal (hostname, username, SSH key only)
+
+**pallas** (macOS aarch64-darwin):
+- Work macOS laptop
+- Nix management: Determinate Nix
+- Shared darwin defaults auto-applied via `modules/darwin/macos-defaults`
+- System config: Minimal (hostname, username, SSH key only)
 
 ### Flake Structure
 - Entry point: `flake.nix` uses `snowfall-lib.mkFlake`
