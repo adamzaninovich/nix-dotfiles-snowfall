@@ -127,7 +127,6 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 - `bravo.claude` - Claude Code CLI
 - `bravo.comic-code-fonts` - Comic Code font (uses SOPS for font files)
 - `bravo.lang.elixir` - Elixir environment
-- `bravo.ssh` - SSH configuration
 
 **Always-On Modules** (No enable option, auto-applied to all home configs):
 - `git` - Git and GitHub CLI configuration (applies everywhere, no `bravo.git.enable` needed)

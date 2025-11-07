@@ -6,7 +6,6 @@
   # Bravo modules
   bravo = {
     bat.enable = true;
-    ssh.enable = true;
     claude.enable = true;
     comic-code-fonts.enable = true;
     direnv.enable = true;

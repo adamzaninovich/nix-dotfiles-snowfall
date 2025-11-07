@@ -23,6 +23,18 @@
   documentation.enable = lib.mkDefault true;
   documentation.man.enable = lib.mkDefault true;
 
+  # SSH server configuration - prevent TERM variable override
+  services.openssh.enable = lib.mkDefault true;
+
+  # Configure sshd via environment.etc (extraConfig doesn't exist in nix-darwin)
+  environment.etc."ssh/sshd_config.d/100-nix-darwin.conf" = {
+    text = lib.mkDefault ''
+      # Don't accept TERM from SSH clients - use the shell's default instead
+      # This prevents terminals like Ghostty from overriding TERM with their own values
+      AcceptEnv LANG LC_*
+    '';
+  };
+
   system = {
     stateVersion = lib.mkDefault 5;
 
