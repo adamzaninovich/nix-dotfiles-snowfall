@@ -41,10 +41,7 @@
     # Configuration shortcuts
     vconf = "nvim ~/.config/nvim/init.lua";
     hconf = "nvim ~/.config/hypr/hyprland.conf";
-    # gconf = "nvim ~/.config/snowfall/homes/modules/ghostty.nix && home-manager switch";
-    # pconf = "nvim ~/.config/snowfall/homes/modules/starship.nix && home-manager switch";
-    # zconf = "nvim ~/.config/snowfall/homes/modules/zsh.nix && home-manager switch";
-    # nconf = "nvim ~/.config/snowfall/homes/a.zaninovich.nix && home-manager switch";
+    nconf = "pushd ~/.config/snowfall && nvim .; popd";
     cnc = "pushd ~/.config/snowfall && claude; popd";
 
     more = "less";
