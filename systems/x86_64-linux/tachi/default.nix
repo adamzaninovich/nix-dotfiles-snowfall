@@ -220,6 +220,9 @@ in
       lm_sensors
       whois
       dig
+      e2fsprogs
+      gptfdisk
+      parted
 
       # Bluetooth
       blueman
