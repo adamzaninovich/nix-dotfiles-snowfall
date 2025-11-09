@@ -16,17 +16,18 @@ This directory contains encrypted secrets managed by sops-nix.
 
 ## Editing Secrets on Existing Machine
 
-On a machine that's already set up (like tachi):
+On a machine that's already set up (like tachi or rocinante):
 
 ```bash
 # Set the age key file (optional but recommended for clarity)
 export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
 
-# Edit system secrets
+# Edit system secrets (YAML)
 nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
 
-# Edit binary secrets (fonts, etc)
+# Edit binary secrets (fonts)
 nix-shell -p sops --run 'sops secrets/comic-code-fonts.tar.gz'
+nix-shell -p sops --run 'sops secrets/doom-fonts.tar.gz'
 ```
 
 Sops automatically uses `~/.config/sops/age/keys.txt` (which is a symlink to your host key), but setting `SOPS_AGE_KEY_FILE` explicitly ensures the correct key is used.
@@ -311,16 +312,32 @@ Repository:
 ├── .sops.yaml                           # Encryption configuration (public keys)
 ├── secrets/
 │   ├── system-secrets.yaml              # Encrypted YAML secrets
-│   └── comic-code-fonts.tar.gz          # Encrypted binary secrets
-└── modules/nixos/sops/default.nix       # Sops-nix configuration
+│   ├── comic-code-fonts.tar.gz          # Encrypted binary (both platforms)
+│   └── doom-fonts.tar.gz                # Encrypted binary (both platforms)
+└── modules/
+    ├── nixos/sops/default.nix           # NixOS sops-nix configuration
+    ├── darwin/sops/default.nix          # Darwin sops-nix configuration
+    └── home/doom-fonts/default.nix      # Home-level doom-fonts decryption
 
 Local Keys (not in repo):
 ~/.config/sops/age/
 ├── keys.txt                             # Symlink to current host key
 └── <hostname>.txt                       # Host-specific private key
 
-Runtime (system creates these):
-/run/secrets/
+Runtime (system-level secrets):
+NixOS (/run/secrets/):
 ├── adam-password                        # Decrypted password
 └── comic-code-fonts                     # Decrypted fonts tarball
+
+Darwin (/var/lib/secrets/):
+└── comic-code-fonts                     # Decrypted fonts tarball
+
+Runtime (home-level secrets - decrypted during home activation):
+NixOS:    ~/.local/share/fonts/doom-fonts/
+Darwin:   ~/Library/Fonts/doom-fonts/
+
+Note: doom-fonts uses home-level decryption on both platforms:
+- Decrypted by doom-fonts home module during activation (not system sops)
+- Automatically enabled when doom-emacs is enabled
+- Uses osConfig.sops.age.keyFile for decryption
 ```

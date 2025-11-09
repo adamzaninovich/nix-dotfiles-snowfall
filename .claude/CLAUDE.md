@@ -6,7 +6,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-configuration framework for Nix flakes. The namespace is `bravo` (configured in `flake.nix`), which prefixes all custom modules and library functions.
 
-**Current System**: `tachi` - NixOS x86_64-linux with Hyprland desktop environment
+**Current Systems**:
+- `tachi` - NixOS x86_64-linux with Hyprland desktop environment
+- `rocinante` - macOS aarch64-darwin with nix-darwin
+- `pallas` - macOS aarch64-darwin work laptop (nix-darwin)
+
+## Quick Reference
+
+**Home Manager API Notes**:
+- Use `programs.zsh.initContent` instead of deprecated `programs.zsh.initExtra`
+- Both accept the same values (strings, mkMerge, mkOrder), but initContent is the current API
+
+**Build Commands**:
+```bash
+# NixOS (tachi)
+sudo nixos-rebuild switch --flake .#tachi
+
+# macOS (rocinante)
+darwin-rebuild switch --flake .#rocinante
+```
+
+**Architecture**:
+- Namespace: `bravo.*` for all custom options
+- Auto-discovery: File structure = configuration (no manual imports)
+- Git requirement: `git add` files immediately for Snowfall to see them
+- Cross-platform: Shared home modules, platform-specific system modules
 
 ## Snowfall Philosophy
 
@@ -64,32 +88,47 @@ Snowfall Lib uses **automatic discovery** based on directory structure. The file
 All custom modules use the `bravo` namespace (configured in `flake.nix` as `snowfall.namespace = "bravo"`):
 - Modules create options: `options.bravo.<module-name>.enable`
 - Modules are composable - meta-modules enable sub-modules
-- Example: `bravo.desktop.wayland-desktop.enable = true` enables hyprland, waybar, wofi, swaync, gtk
+- Example: `bravo.desktop.wayland.enable = true` enables hyprland, waybar, wofi, swaync, gtk
 
 ### Current Module Inventory
 
 **Desktop Environment** (`modules/home/desktop/`):
-- `bravo.desktop.wayland-desktop` - Meta-module enabling complete Hyprland environment
-- `bravo.desktop.hyprland` - Hyprland window manager + hyprlock
-- `bravo.desktop.theme.rosepine` - Rosé Pine Moon color scheme (read-only, always available)
-- `bravo.desktop.waybar` - Status bar
-- `bravo.desktop.wofi` - Application launcher
-- `bravo.desktop.swaync` - Notification daemon
-- `bravo.desktop.gtk` - GTK theme
 
-**Development Tools** (`modules/home/`):
+**Wayland (Linux only):**
+- `bravo.desktop.wayland` - Meta-module enabling complete Hyprland environment
+- `bravo.desktop.wayland.hyprland` - Hyprland window manager + hyprlock
+- `bravo.desktop.wayland.waybar` - Waybar status bar
+- `bravo.desktop.wayland.wofi` - Wofi application launcher
+- `bravo.desktop.wayland.swaync` - SwayNC notification daemon
+
+**macOS:**
+- `bravo.desktop.macos` - Meta-module enabling complete macOS desktop environment with AeroSpace
+- `bravo.desktop.macos.aerospace` - AeroSpace tiling window manager
+- `bravo.desktop.macos.sketchybar` - SketchyBar status bar
+- `bravo.desktop.macos.borders` - Window borders
+
+**Theme & UI (Cross-platform):**
+- `bravo.desktop.theme.rosepine` - Rosé Pine Moon color scheme (read-only option, colors available via lib everywhere)
+- `bravo.desktop.gtk` - GTK theme (Linux only)
+
+**Development Tools** (`modules/home/` - Cross-platform):
 - `bravo.zsh` - Shell with aliases
 - `bravo.neovim` - Neovim
 - `bravo.doom-emacs` - Doom Emacs
-- `bravo.ghostty` - Terminal emulator
+- `bravo.doom-fonts` - Doom Emacs fonts
+- `bravo.ghostty` - Terminal emulator (config only on macOS; package + config on Linux)
 - `bravo.git` - Git config
 - `bravo.gpg` - GPG + agent
 - `bravo.bat` - Better cat
+- `bravo.direnv` - direnv integration
 - `bravo.claude` - Claude Code CLI
+- `bravo.comic-code-fonts` - Comic Code font (uses SOPS for font files)
 - `bravo.lang.elixir` - Elixir environment
 
-**System Modules** (`modules/nixos/`):
-- `sops` - Auto-applied to all NixOS systems (not namespaced - uses upstream `sops.*`)
+**System Modules** (Auto-applied, not namespaced):
+- `modules/nixos/sops` - SOPS secrets for NixOS (uses upstream `sops.*` options)
+- `modules/darwin/sops` - SOPS secrets for Darwin (uses upstream `sops.*` options)
+- `modules/darwin/macos-defaults` - Shared macOS system defaults (dock, finder, trackpad, etc.) with `lib.mkDefault` for per-system overrides
 
 **Packages** (`packages/`):
 - `claude-code` - Claude Code package
@@ -101,6 +140,7 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 
 ### Building and Switching
 
+**NixOS (tachi)**:
 ```bash
 # Rebuild system (automatically includes home-manager config)
 sudo nixos-rebuild switch --flake .#tachi
@@ -112,6 +152,18 @@ sudo nixos-rebuild test --flake .#tachi
 home-manager switch --flake .#adam@tachi
 ```
 
+**macOS Darwin (rocinante)**:
+```bash
+# Rebuild system (automatically includes home-manager config)
+darwin-rebuild switch --flake .#rocinante
+
+# Build without switching
+darwin-rebuild build --flake .#rocinante
+
+# Build home configuration standalone (if needed)
+home-manager switch --flake .#adam@rocinante
+```
+
 **How Snowfall Integrates Homes**:
 - Snowfall **automatically integrates** home configurations into systems when the hostname matches
 - `homes/x86_64-linux/adam@tachi/` → integrated into system `tachi` because `@tachi` matches
@@ -119,32 +171,84 @@ home-manager switch --flake .#adam@tachi
 - Home configurations are also available as standalone `homeConfigurations` output if needed
 - No need to manually add `home-manager.nixosModules.home-manager` - Snowfall does this automatically
 
-**Suggested aliases** (update in `homes/x86_64-linux/adam@tachi/default.nix`):
-```nix
-programs.zsh.shellAliases = {
-  rebuild = "sudo nixos-rebuild switch --flake ~/.config/snowfall#tachi";
-  rebuild-test = "sudo nixos-rebuild test --flake ~/.config/snowfall#tachi";
-};
-```
+**Suggested aliases**:
+- For NixOS (in `homes/x86_64-linux/adam@tachi/default.nix`):
+  ```nix
+  programs.zsh.shellAliases = {
+    rebuild = "sudo nixos-rebuild switch --flake ~/.config/snowfall#tachi";
+    rebuild-test = "sudo nixos-rebuild test --flake ~/.config/snowfall#tachi";
+  };
+  ```
+- For macOS (in `homes/aarch64-darwin/adam@rocinante/default.nix`):
+  ```nix
+  programs.zsh.shellAliases = {
+    rebuild = "darwin-rebuild switch --flake ~/.config/snowfall#rocinante";
+    rebuild-test = "darwin-rebuild build --flake ~/.config/snowfall#rocinante";
+  };
+  ```
 
 ### Secrets Management
 
+**Current Host Keys**:
+- `tachi`: `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
+- `rocinante`: `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
+- `pallas`: `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`
+
+**Common Commands**:
 ```bash
 # Edit encrypted secrets
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
 nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
+nix-shell -p sops --run 'sops secrets/comic-code-fonts.tar.gz'
+nix-shell -p sops --run 'sops secrets/doom-fonts.tar.gz'
 
-# Get age public key from SSH host key
-sudo nix-shell -p ssh-to-age --run 'ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub'
+# Generate new host age key (for new machines)
+mkdir -p ~/.config/sops/age
+nix-shell -p age --run 'age-keygen -o ~/.config/sops/age/<hostname>.txt'
 
-# Create password hash
+# Create password hash (for NixOS user passwords)
 nix-shell -p mkpasswd --run 'mkpasswd -m sha-512'
 
-# Verify secrets
+# Verify decrypted secrets at runtime
+# NixOS (tachi):
 ls -la /run/secrets/adam-password
-ls -la /var/lib/sops-nix/key.txt
+ls -la /run/secrets/comic-code-fonts
+# Darwin (rocinante):
+ls -la /var/lib/secrets/comic-code-fonts
+
+# Note: doom-fonts decrypts during home activation on both platforms:
+# NixOS:  ~/.local/share/fonts/doom-fonts/
+# Darwin: ~/Library/Fonts/doom-fonts/
 ```
 
-See `secrets/README.md` for complete SOPS setup guide.
+**File Locations**:
+```
+Repository:
+~/.config/snowfall/
+├── .sops.yaml                    # Encryption config (public keys)
+├── secrets/
+│   ├── system-secrets.yaml       # Encrypted YAML secrets
+│   ├── comic-code-fonts.tar.gz   # Encrypted binary (both platforms)
+│   └── doom-fonts.tar.gz         # Encrypted binary (both platforms)
+└── modules/
+    ├── nixos/sops/               # NixOS sops config
+    └── darwin/sops/              # Darwin sops config
+
+Local Keys (not in repo):
+~/.config/sops/age/
+├── keys.txt                      # Symlink to current host key
+└── <hostname>.txt                # Host-specific private key
+
+Runtime (system-level secrets):
+NixOS:    /run/secrets/           # adam-password, comic-code-fonts
+Darwin:   /var/lib/secrets/       # comic-code-fonts
+
+Runtime (home-level secrets - decrypted during activation):
+NixOS:    ~/.local/share/fonts/doom-fonts/
+Darwin:   ~/Library/Fonts/doom-fonts/
+```
+
+See `secrets/README.md` for complete setup, reencryption, and troubleshooting guide.
 
 ### Flake Commands
 
@@ -214,8 +318,40 @@ final: prev: {
 ```nix
 { lib, inputs, namespace, ... }:
 {
-  # Functions available as lib.bravo.<name>.my-function
+  # Functions available as lib.bravo.<name>
   my-function = x: x;
+}
+```
+
+**Current Libraries**:
+- `lib/rose_pine/` - Rosé Pine color palettes and conversion functions
+  - Access as: `lib.bravo.rose_pine.moon`, `lib.bravo.rose_pine.toHex`, etc.
+  - Available in ALL Nix expressions (modules, systems, homes, packages, overlays)
+
+### Platform-Specific Modules
+
+Snowfall auto-applies modules based on system type:
+- `modules/nixos/` - Only applied to NixOS systems (tachi)
+- `modules/darwin/` - Only applied to macOS systems (rocinante)
+- `modules/home/` - Applied to all Home Manager configurations (both platforms)
+
+When creating modules that work across platforms:
+```nix
+# In modules/home/my-tool/default.nix
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.bravo.my-tool;
+in {
+  options.bravo.my-tool.enable = lib.mkEnableOption "my tool";
+
+  config = lib.mkIf cfg.enable {
+    # Platform-agnostic config
+    home.packages = [ pkgs.my-tool ];
+
+    # Platform-specific config
+    home.file.".myconfig".text = lib.optionalString pkgs.stdenv.isDarwin "macOS config"
+                               + lib.optionalString pkgs.stdenv.isLinux "Linux config";
+  };
 }
 ```
 
@@ -312,31 +448,72 @@ git add overlays/my-overlay/
 
 ### Theme System
 
-The Rosé Pine Moon theme (`modules/home/desktop/theme/default.nix`) provides colors in multiple formats:
-- `colors.palette.*` - Raw hex values (RRGGBB)
-- `colors.hyprland.*` - Hyprland format (0xffRRGGBB)
-- `colors.hex.*` - CSS hex (#RRGGBB)
-- `colors.rgb.*` - CSS rgb() format
-- `colors.rgba(alpha).*` - CSS rgba() with custom alpha
+The Rosé Pine color scheme is available in two ways:
 
-Access in any module: `config.bravo.desktop.theme.rosepine.colors`
+**1. Via Library Functions** (available everywhere):
+```nix
+{ lib, ... }:
+let
+  rosepine = lib.bravo.rose_pine;
+in {
+  # Access color palettes
+  some-option = rosepine.moon.base;      # Moon variant: "232136"
+  other-option = rosepine.main.base;     # Main variant: "191724"
+  color = rosepine.palette.text;         # Default palette (moon): "e0def4"
+
+  # Use helper functions
+  hyprland-color = rosepine.toHyprland rosepine.palette.love;  # "0xffeb6f92"
+  css-hex = rosepine.toHex rosepine.palette.foam;              # "#9ccfd8"
+  css-rgb = rosepine.toRGB rosepine.palette.iris;              # "rgb(196, 167, 231)"
+  css-rgba = rosepine.toRGBA "0.5" rosepine.palette.base;      # "rgba(35, 33, 54, 0.5)"
+}
+```
+
+**2. Via Home Module** (when `bravo.desktop.theme.rosepine.enable = true`):
+```nix
+{ config, ... }:
+{
+  # Pre-converted color formats
+  some-setting = config.bravo.desktop.theme.rosepine.colors.hex.love;       # "#eb6f92"
+  other-setting = config.bravo.desktop.theme.rosepine.colors.hyprland.base; # "0xff232136"
+  rgb-color = config.bravo.desktop.theme.rosepine.colors.rgb.foam;          # "rgb(156, 207, 216)"
+}
+```
+
+**Available in**: `lib/rose_pine/default.nix` - accessible as `lib.bravo.rose_pine` everywhere
 
 ### SOPS Integration
 
-The sops module (`modules/nixos/sops/default.nix`) is auto-applied to all NixOS systems:
-- Uses SSH host key at `/etc/ssh/ssh_host_ed25519_key`
-- Auto-generates age key at `/var/lib/sops-nix/key.txt`
-- Default secrets file: `secrets/system-secrets.yaml`
-- Binary secrets supported (e.g., `comic-code-fonts.tar.gz`)
+SOPS modules are auto-applied based on system type:
+- **NixOS** (`modules/nixos/sops`): Uses host age key at `~/.config/sops/age/<hostname>.txt`
+- **Darwin** (`modules/darwin/sops`): Uses host age key at `~/.config/sops/age/<hostname>.txt`
 
-Add new secrets:
-1. Add to `.sops.yaml` creation rules
-2. Define in sops module: `sops.secrets.<name> = { };`
-3. Edit encrypted file: `nix-shell -p sops --run 'sops <file>'`
+**Key Architecture**:
+- **Master key**: Stored in 1Password, used only for adding new hosts and reencryption
+- **Host keys**: Per-machine age keys at `~/.config/sops/age/<hostname>.txt`
+- Each machine only needs its own host key to decrypt secrets
+- Secrets are encrypted with ALL keys (master + all hosts)
+- `~/.config/sops/age/keys.txt` is a symlink to current host's key
 
-See `secrets/README.md` for complete guide.
+**Adding New Secrets**:
+```bash
+# 1. Add to `.sops.yaml` creation rules
+# 2. Define in sops module: sops.secrets.<name> = { };
+# 3. Edit encrypted file
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
+```
 
-### Hyprland Configuration
+**Setting Up New Machine** (high-level):
+1. Generate host age key: `age-keygen -o ~/.config/sops/age/<hostname>.txt`
+2. Add public key to `.sops.yaml` (commit and push)
+3. Reencrypt all secrets with master key: `sops updatekeys secrets/*`
+4. Pull repo on new machine and build
+5. Create symlink: `ln -sf <hostname>.txt ~/.config/sops/age/keys.txt`
+
+See `secrets/README.md` for detailed setup, reencryption steps, and troubleshooting.
+
+### Hyprland Configuration (NixOS only)
 
 Hyprland is configured in `modules/home/desktop/hyprland/default.nix`:
 - Main mod: SUPER
@@ -345,6 +522,32 @@ Hyprland is configured in `modules/home/desktop/hyprland/default.nix`:
 - Launcher: wofi (`ALT + Space`)
 - Lock: hyprlock (`$mainMod + Shift + L`)
 - Movement: vim keys (HJKL) or arrows
+
+### macOS Integration
+
+**mac-app-util Module**:
+The `mac-app-util` home-manager module is automatically included for the rocinante home configuration (configured in `flake.nix`):
+```nix
+homes.users."adam@rocinante".modules = with inputs; [
+  mac-app-util.homeManagerModules.default
+];
+```
+
+This enables proper macOS app integration for Nix-installed applications (Spotlight, LaunchPad, etc.).
+
+**Shared Darwin Defaults**:
+Common macOS system preferences are configured in `modules/darwin/macos-defaults/` and auto-apply to all darwin systems. Settings include:
+- Dock configuration (autohide, hot corners, tile size)
+- Finder preferences (show extensions, path bar, status bar)
+- Trackpad settings (tap-to-click, three-finger drag)
+- Global settings (dark mode, screenshots to ~/Workspace)
+- Documentation and man pages enabled
+- Passwordless sudo for admin group
+
+All settings use `lib.mkDefault` so they can be overridden per-system by setting them directly in system configs. See [nix-darwin options](https://daiderd.com/nix-darwin/manual/index.html#sec-options) for available settings.
+
+**Determinate Nix**:
+All darwin systems use Determinate Nix installer, which manages the nix daemon. Therefore, `nix.enable = false` is set in the shared darwin defaults to prevent conflicts.
 
 ## Important Snowfall Conventions
 
@@ -376,13 +579,30 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Channel config in `flake.nix`: `channels-config = { allowUnfree = true; ... }`
 
 ### System-Specific Notes
-- **tachi**: NixOS x86_64-linux, Hyprland, ZFS (auto-scrub + trim)
-- **Users**: mutableUsers = false - all user management is declarative
-- **SSH**: enabled, password auth disabled, key-based only
-- **Git commits**: Single-line, no extra attributions (per global CLAUDE.md)
+
+**tachi** (NixOS x86_64-linux):
+- Desktop: Hyprland + Wayland stack
+- Storage: ZFS with auto-scrub and trim
+- Login: greetd with tuigreet (TUI greeter)
+- Audio: PipeWire (ALSA, PulseAudio, JACK support)
+- Users: `mutableUsers = false` - all user management is declarative
+- SSH: enabled, password auth disabled, key-based only
+- Security: Passwordless sudo for adam
+
+**rocinante** (macOS aarch64-darwin):
+- Personal macOS laptop
+- Nix management: Determinate Nix
+- Shared darwin defaults auto-applied via `modules/darwin/macos-defaults`
+- System config: Minimal (hostname, username, SSH key only)
+
+**pallas** (macOS aarch64-darwin):
+- Work macOS laptop
+- Nix management: Determinate Nix
+- Shared darwin defaults auto-applied via `modules/darwin/macos-defaults`
+- System config: Minimal (hostname, username, SSH key only)
 
 ### Flake Structure
 - Entry point: `flake.nix` uses `snowfall-lib.mkFlake`
 - Namespace: `bravo` (set in `snowfall.namespace`)
-- Inputs: nixpkgs (stable), unstable, home-manager, sops-nix, doom-fonts, zen-browser
-- Systems target: x86_64-linux (extendable to darwin)
+- Inputs: nixpkgs (nixos-25.05), unstable, home-manager, sops-nix, darwin, mac-app-util, nixos-hardware, nixos-wsl, zen-browser
+- Systems: x86_64-linux (NixOS), aarch64-darwin (macOS)

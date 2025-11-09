@@ -7,7 +7,7 @@ in
   options.bravo.sops = {
     keyFile = lib.mkOption {
       type = lib.types.path;
-      default = "/Users/adam/.config/sops/age/keys.txt";
+      default = "/Users/${config.system.primaryUser}/.config/sops/age/keys.txt";
       description = "Path to the sops age key file. Use keys.txt symlink for host-agnostic config.";
     };
   };

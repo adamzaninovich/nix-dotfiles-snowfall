@@ -26,26 +26,11 @@ in
   config = mkIf cfg.enable {
     programs.gpg = {
       enable = true;
-      # publicKeys = [
-      #   {
-      #     source = ./adamzaninovich-public.asc;
-      #     trust = 5;
-      #   }
-      # ];
-      # settings = {
-      #   throw-keyids = true;
-      #   no-autostart = !cfg.autostart;
-      # };
-      # scdaemonSettings = {
-      #   disable-ccid = true;
-      # };
     };
 
     services.gpg-agent = {
       enable = cfg.enable;
-      verbose = true;
       enableSshSupport = true;
-      enableExtraSocket = cfg.enableExtraSocket;
       enableZshIntegration = config.programs.zsh.enable;
       pinentry.package = cfg.pinentry;
 
@@ -53,12 +38,13 @@ in
       defaultCacheTtl = 28800; # 8 hours
       maxCacheTtl = 86400; # 24 hours
 
+      # Disable grab on macOS to allow pinentry-mac keychain integration
+      # grabKeyboardAndMouse = !pkgs.stdenv.isDarwin;
+
       # Expose GPG authentication subkey for SSH
       sshKeys = [
         "8B6927D71151F843BFE79F0D3417726F43192AD2"
       ];
-      # enableScDaemon = true;
-      # grabKeyboardAndMouse = false;
     };
   };
 }

@@ -28,7 +28,7 @@ in
           eval_result: [:green, :bright],
           eval_error: [:red, :bright],
           eval_info: [:yellow, :bright],
-        ]
+        ],
         default_prompt:
           "#{IO.ANSI.magenta} #{IO.ANSI.reset}(%counter) |",
         continuation_prompt:
