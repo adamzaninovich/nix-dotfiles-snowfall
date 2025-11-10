@@ -36,9 +36,6 @@
     packages = with pkgs; [
       # rocinante-specific packages
       ntfs3g
-      unstable.aerospace
-      unstable.jankyborders
-      unstable.sketchybar
       shottr
       stow
       # macOS-common packages
