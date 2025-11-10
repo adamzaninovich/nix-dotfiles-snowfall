@@ -34,6 +34,7 @@ creation_rules:
           - *rocinante
           - *pallas
           - *wsl
+          - *sgate
   - path_regex: secrets/doom-fonts\.tar\.gz$
     key_groups:
       - age:
@@ -42,3 +43,4 @@ creation_rules:
           - *rocinante
           - *pallas
           - *wsl
+          - *sgate
