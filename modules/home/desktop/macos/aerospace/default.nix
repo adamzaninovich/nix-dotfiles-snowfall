@@ -25,6 +25,16 @@ in
       enable-normalization-flatten-containers = true
       enable-normalization-opposite-orientation-for-nested-containers = true
 
+      accordion-padding = 30
+
+      # Possible values: tiles|accordion
+      default-root-container-layout = 'tiles'
+
+      # Possible values: horizontal|vertical|auto
+      # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
+      #               tall monitor (anything higher than wide) gets vertical orientation
+      default-root-container-orientation = 'auto'
+
       # Mouse follows focus
       on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
@@ -32,10 +42,10 @@ in
       [gaps]
       inner.horizontal = 4
       inner.vertical   = 4
-      outer.left       = 0
+      outer.left       = 4
       outer.bottom     = 0
       outer.top        = 0
-      outer.right      = 0
+      outer.right      = 4
 
       # Mode descriptions
       [mode.main.binding]
@@ -93,6 +103,11 @@ in
       alt-shift-9 = 'move-node-to-workspace 9'
       alt-shift-0 = 'move-node-to-workspace 10'
 
+      # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+      alt-tab = 'workspace-back-and-forth'
+      # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
+      alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
       # Layout toggles
       alt-f = 'fullscreen'
       alt-s = 'layout v_accordion'  # stacking
@@ -107,12 +122,12 @@ in
 
       # Resize mode bindings
       [mode.resize.binding]
+      esc = 'mode main'
+      enter = 'mode main'
       h = 'resize width -50'
       j = 'resize height +50'
       k = 'resize height -50'
       l = 'resize width +50'
-      enter = 'mode main'
-      esc = 'mode main'
 
       # Service mode bindings
       [mode.service.binding]
