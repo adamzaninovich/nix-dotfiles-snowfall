@@ -14,6 +14,7 @@ keys:
   - &rocinante age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h
   - &pallas age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a
   - &wsl age1dj7j53uh0nu25v0yxrfvgsufuzjqwpghtnusaguur56cv8522y2s27n0r0
+  - &sgate age1xhfa53ky9xyerhzlc7esnrdnak2py8rpj2ln3agdr7lrv0qjk3dsp82tut
 
 creation_rules:
   - path_regex: secrets/system-secrets\.yaml$
@@ -24,6 +25,7 @@ creation_rules:
           - *rocinante
           - *pallas
           - *wsl
+          - *sgate
   - path_regex: secrets/comic-code-fonts\.tar\.gz$
     key_groups:
       - age:
