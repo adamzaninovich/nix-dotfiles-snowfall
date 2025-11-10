@@ -32,10 +32,10 @@ in
       [gaps]
       inner.horizontal = 4
       inner.vertical   = 4
-      outer.left       = 4
-      outer.bottom     = 4
-      outer.top        = 4
-      outer.right      = 4
+      outer.left       = 0
+      outer.bottom     = 0
+      outer.top        = 0
+      outer.right      = 0
 
       # Mode descriptions
       [mode.main.binding]

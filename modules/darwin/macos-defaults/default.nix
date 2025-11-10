@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ pkgs, lib, ... }:
 
 # Shared macOS system defaults that auto-apply to all darwin systems.
 # All settings use lib.mkDefault so they can be overridden per-system.

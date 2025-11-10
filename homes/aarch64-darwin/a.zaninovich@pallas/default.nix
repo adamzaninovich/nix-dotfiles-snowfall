@@ -43,7 +43,7 @@
       opencv
       postgresql_16
 
-      # macOS-specific packages
+      # macOS-common packages
       age
       sops
       localsend
@@ -59,7 +59,6 @@
       python314
       rustup
       shellcheck
-      stow
     ];
 
     sessionVariables = {

@@ -32,10 +32,16 @@
     username = "adam";
     homeDirectory = "/Users/adam";
     stateVersion = "25.05";
+
     packages = with pkgs; [
-      # rocinante only
+      # rocinante-specific packages
       ntfs3g
-      # macOS-specific packages
+      unstable.aerospace
+      unstable.jankyborders
+      unstable.sketchybar
+      shottr
+      stow
+      # macOS-common packages
       age
       sops
       localsend
@@ -51,8 +57,6 @@
       python314
       rustup
       shellcheck
-      # shottr
-      stow
     ];
 
     sessionVariables = {
