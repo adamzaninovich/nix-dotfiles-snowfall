@@ -4,7 +4,6 @@
 
   bravo = {
     zsh.enable = true;
-    ssh.enable = true;
     bat.enable = true;
     direnv.enable = true;
     neovim.enable = true;
@@ -24,7 +23,7 @@
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
-    desktop.macos.enable = false;
+    desktop.macos.enable = true;
 
     lang.elixir.enable = true;
 

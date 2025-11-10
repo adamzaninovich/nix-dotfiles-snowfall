@@ -67,6 +67,10 @@
         mac-app-util.homeManagerModules.default
       ];
 
+      homes.users."a.zaninovich@pallas".modules = with inputs; [
+        mac-app-util.homeManagerModules.default
+      ];
+
       # todo: add sops
       # homes.modules = with inputs; [
       #   sops-nix.homeManagerModules.sops
