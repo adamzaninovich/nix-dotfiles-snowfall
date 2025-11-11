@@ -100,17 +100,21 @@ in
       # When AeroSpace starts, enforce accordion layout and handle fallback if external is missing
       after-startup-command = [
         # Force accordion on both
-        "layout h_accordion",
-        "focus-monitor next",
-        "layout h_accordion",
-        "focus-monitor prev",
-
-        # Fallback: if external monitor missing, collapse all workspaces to built-in
-        # "exec-and-forget bash -lc 'if [ \"$(aerospace list-monitors | wc -l)\" -eq 1 ]; then for w in 2 3 4 5 6 7 8 9 10 11; do aerospace workspace \"$w\"; aerospace move-workspace-to-monitor --wrap-around prev; done; aerospace workspace 1; fi'"
+        'layout h_accordion',
+        'focus-monitor next',
+        'layout h_accordion',
+        'focus-monitor prev',
 
         # Start Borders
-        "exec-and-forget bash -lc 'pkill -x borders || true; exec ${config.home.profileDirectory}/bin/borders-run'"
+        'exec-and-forget ${config.home.profileDirectory}/bin/borders-run'
+
+        # Start Bar
+        # 'exec-and-forget sketchybar'
       ]
+
+      # exec-on-workspace-change = ['/bin/bash', '-c',
+      #   'sketchybar --trigger aerospace_workspace_change FOCUSED=$AEROSPACE_FOCUSED_WORKSPACE'
+      # ]
 
       # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
       enable-normalization-flatten-containers = true
@@ -148,7 +152,7 @@ in
       inner.vertical   = 4
       outer.left       = 4
       outer.bottom     = 2
-      outer.top        = 2
+      outer.top        = 8
       outer.right      = 4
 
       # Mode descriptions

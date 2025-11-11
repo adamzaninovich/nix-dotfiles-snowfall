@@ -20,7 +20,6 @@ in
     bravo.desktop.macos = {
       aerospace.enable = true;
       sketchybar.enable = true;
-      borders.enable = true;
     };
   };
 }
