@@ -223,6 +223,7 @@ in
       e2fsprogs
       gptfdisk
       parted
+      zenity
 
       # Bluetooth
       blueman
