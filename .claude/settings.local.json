@@ -17,9 +17,9 @@
     "deny": [],
     "ask": []
   },
-  "outputStyle": "Learning",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "nixos"
-  ]
+  ],
+  "outputStyle": "Explanatory"
 }
