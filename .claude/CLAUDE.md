@@ -190,17 +190,23 @@ home-manager switch --flake .#adam@rocinante
 ### Secrets Management
 
 **Current Host Keys**:
-- `tachi`: `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
-- `rocinante`: `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
-- `pallas`: `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`
+- `tachi` (NixOS):
+  - System key at `/etc/sops/age/tachi.txt` (for boot-time decryption)
+  - User key at `~/.config/sops/age/tachi.txt` (for manual editing)
+  - Public: `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
+- `rocinante` (Darwin): User key at `~/.config/sops/age/rocinante.txt` (public: `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`)
+- `pallas` (Darwin): User key at `~/.config/sops/age/pallas.txt` (public: `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`)
+
+Note: All systems use `SOPS_AGE_KEY_FILE=$HOME/.config/sops/age/keys.txt` for manual `sops` commands.
 
 **Common Commands**:
 ```bash
 # Edit encrypted secrets
-export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
-nix-shell -p sops --run 'sops secrets/system-secrets.yaml'
-nix-shell -p sops --run 'sops secrets/comic-code-fonts.tar.gz'
-nix-shell -p sops --run 'sops secrets/doom-fonts.tar.gz'
+# Note: SOPS_AGE_KEY_FILE is set to $HOME/.config/sops/age/keys.txt in all home configs
+# No need to manually export - it's set automatically in your shell session
+sops secrets/system-secrets.yaml
+sops secrets/comic-code-fonts.tar.gz
+sops secrets/doom-fonts.tar.gz
 
 # Generate new host age key (for new machines)
 mkdir -p ~/.config/sops/age
@@ -211,8 +217,8 @@ nix-shell -p mkpasswd --run 'mkpasswd -m sha-512'
 
 # Verify decrypted secrets at runtime
 # NixOS (tachi):
-ls -la /run/secrets/adam-password
-ls -la /run/secrets/comic-code-fonts
+sudo ls -la /run/secrets-for-users/adam-password
+sudo ls -la /run/secrets/comic-code-fonts
 # Darwin (rocinante):
 ls -la /var/lib/secrets/comic-code-fonts
 
@@ -235,12 +241,26 @@ Repository:
     └── darwin/sops/              # Darwin sops config
 
 Local Keys (not in repo):
-~/.config/sops/age/
-├── keys.txt                      # Symlink to current host key
-└── <hostname>.txt                # Host-specific private key
+NixOS (tachi):
+  System key (for boot-time decryption):
+    /etc/sops/age/
+    ├── keys.txt -> tachi.txt     # Symlink (used by sops-nix module)
+    └── tachi.txt                 # Host-specific private key (root:root, 600)
+
+  User key (for manual editing):
+    ~/.config/sops/age/
+    ├── keys.txt -> tachi.txt     # Symlink (used by sops CLI via SOPS_AGE_KEY_FILE)
+    └── tachi.txt                 # Host-specific private key (adam:adam, 600)
+                                  # ⚠️  Identical content to /etc/sops/age/tachi.txt
+
+Darwin (rocinante, pallas):
+  ~/.config/sops/age/
+  ├── keys.txt -> <hostname>.txt  # Symlink (used by sops CLI via SOPS_AGE_KEY_FILE)
+  └── <hostname>.txt              # Host-specific private key
 
 Runtime (system-level secrets):
-NixOS:    /run/secrets/           # adam-password, comic-code-fonts
+NixOS:    /run/secrets-for-users/ # adam-password
+          /run/secrets/           # comic-code-fonts
 Darwin:   /var/lib/secrets/       # comic-code-fonts
 
 Runtime (home-level secrets - decrypted during activation):

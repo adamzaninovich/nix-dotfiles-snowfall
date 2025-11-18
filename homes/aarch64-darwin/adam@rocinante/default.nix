@@ -56,6 +56,9 @@
       # shottr
       stow
     ];
+    sessionVariables = {
+      SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
+    };
   };
 
   programs.home-manager.enable = true;

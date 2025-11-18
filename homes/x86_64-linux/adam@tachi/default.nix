@@ -44,6 +44,11 @@
       localsend
       inputs.zen-browser.packages."${pkgs.system}".default
     ];
+    sessionVariables = {
+      # Point to user key in home directory (not /etc/sops/age/)
+      # The system module will use /etc/sops/age/keys.txt for boot-time decryption
+      SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
+    };
   };
 
   programs.home-manager.enable = true;
