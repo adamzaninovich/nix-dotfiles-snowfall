@@ -12,7 +12,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:rosepinetheme.com)",
       "WebFetch(domain:search.nixos.org)",
-      "WebFetch(domain:snowfall.org)"
+      "WebFetch(domain:snowfall.org)",
+      "WebFetch(domain:wiki.nixos.org)"
     ],
     "deny": [],
     "ask": []
