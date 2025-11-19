@@ -507,7 +507,7 @@
         elif [[ "$(uname)" == "Darwin" ]]; then
           # macOS host with nix-darwin + home-manager
           ohai "Detected macOS host, running darwin-rebuild..."
-          if [[ "$(hostname)" == "azaninovich-L2V57Q9LQ5" ]]; then
+          if [[ "$(hostname)" == "a.zaninovich-L2V57Q9LQ5" ]]; then
             ohai "Detected work laptop with hostname reset"
             sudo darwin-rebuild switch --flake ~/.config/snowfall#pallas
           else
