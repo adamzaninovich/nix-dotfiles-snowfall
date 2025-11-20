@@ -17,6 +17,15 @@ in
 {
   options.bravo.doom-emacs = with types; {
     enable = mkEnableOption "Emacs with Doom";
+
+    autoSync = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Automatically run doom sync when changes are detected in the config
+        or when Emacs-related packages are updated.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -159,43 +168,45 @@ in
         echo "Doom Emacs setup complete!"
       else
         echo "Doom Emacs config already exists at ${doomConfigDir}"
-        
-        # Check if we need to sync based on recent changes
-        if [ -f "${doomBinDir}/doom" ]; then
-          SHOULD_SYNC=0
-          
-          # Check if there have been changes to the config since last sync
-          if [ -d "${doomConfigDir}/.git" ] && ${pkgs.git}/bin/git -C "${doomConfigDir}" status --porcelain | grep -v '\.doom-' | grep -q .; then
-            create_marker "${doomNeedsSyncMarker}" "Changes detected in Doom config, will sync on next shell session"
-            SHOULD_SYNC=1
-          else
-            # Check if any emacs packages were updated
-            if [ -f "${doomLastSyncFile}" ]; then
-              # Check if any Emacs or Doom related packages have been updated since last sync
-              for PKG_PATH in /nix/store/*-emacs* /nix/store/*-doom* /nix/store/*-elixir*; do
-                if [ -e "$PKG_PATH" ] && [ "$PKG_PATH" -nt "${doomLastSyncFile}" ]; then
-                  create_marker "${doomNeedsSyncMarker}" "Detected updated Emacs-related packages, will sync on next shell session"
-                  SHOULD_SYNC=1
-                  break
-                fi
-              done
-              
-              if [ "$SHOULD_SYNC" -eq 0 ]; then
-                echo "No changes affecting Doom detected, skipping sync"
-              fi
-            else
-              # First run or no last sync timestamp
-              create_marker "${doomNeedsSyncMarker}" "No previous sync timestamp found, will sync on next shell session"
+
+        ${lib.optionalString cfg.autoSync ''
+          # Check if we need to sync based on recent changes
+          if [ -f "${doomBinDir}/doom" ]; then
+            SHOULD_SYNC=0
+
+            # Check if there have been changes to the config since last sync
+            if [ -d "${doomConfigDir}/.git" ] && ${pkgs.git}/bin/git -C "${doomConfigDir}" status --porcelain | grep -v '\.doom-' | grep -q .; then
+              create_marker "${doomNeedsSyncMarker}" "Changes detected in Doom config, will sync on next shell session"
               SHOULD_SYNC=1
+            else
+              # Check if any emacs packages were updated
+              if [ -f "${doomLastSyncFile}" ]; then
+                # Check if any Emacs or Doom related packages have been updated since last sync
+                for PKG_PATH in /nix/store/*-emacs* /nix/store/*-doom* /nix/store/*-elixir*; do
+                  if [ -e "$PKG_PATH" ] && [ "$PKG_PATH" -nt "${doomLastSyncFile}" ]; then
+                    create_marker "${doomNeedsSyncMarker}" "Detected updated Emacs-related packages, will sync on next shell session"
+                    SHOULD_SYNC=1
+                    break
+                  fi
+                done
+
+                if [ "$SHOULD_SYNC" -eq 0 ]; then
+                  echo "No changes affecting Doom detected, skipping sync"
+                fi
+              else
+                # First run or no last sync timestamp
+                create_marker "${doomNeedsSyncMarker}" "No previous sync timestamp found, will sync on next shell session"
+                SHOULD_SYNC=1
+              fi
+            fi
+
+            # If we should sync, update the last sync timestamp
+            if [ "$SHOULD_SYNC" -eq 1 ]; then
+              # Update the last sync timestamp (will be used after sync completes)
+              date +%s > "${doomLastSyncFile}"
             fi
           fi
-          
-          # If we should sync, update the last sync timestamp
-          if [ "$SHOULD_SYNC" -eq 1 ]; then
-            # Update the last sync timestamp (will be used after sync completes)
-            date +%s > "${doomLastSyncFile}"
-          fi
-        fi
+        ''}
       fi
     '';
 
@@ -209,12 +220,14 @@ in
           rm -f "${doomNeedsInstallMarker}"
           # Update last sync timestamp
           date +%s > "${doomLastSyncFile}"
+        ${lib.optionalString cfg.autoSync ''
         elif [[ -f "${doomNeedsSyncMarker}" ]]; then
           echo "Syncing Doom Emacs..."
           "${doomBinDir}/doom" sync
           rm -f "${doomNeedsSyncMarker}"
           # Update last sync timestamp
           date +%s > "${doomLastSyncFile}"
+        ''}
         fi
       '')
     ];
