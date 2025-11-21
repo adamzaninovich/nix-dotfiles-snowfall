@@ -58,6 +58,7 @@
       python314
       rustup
       shellcheck
+      inputs.zen-browser.packages."${pkgs.system}".default
     ];
 
     sessionVariables = {
