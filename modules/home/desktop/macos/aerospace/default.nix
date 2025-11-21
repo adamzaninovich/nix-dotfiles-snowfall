@@ -152,7 +152,7 @@ in
       inner.vertical   = 4
       outer.left       = 4
       outer.bottom     = 2
-      outer.top        = 8
+      outer.top        = 2
       outer.right      = 4
 
       # Mode descriptions
