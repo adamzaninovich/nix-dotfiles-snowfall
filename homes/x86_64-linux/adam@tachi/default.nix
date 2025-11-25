@@ -29,7 +29,6 @@
   };
 
   programs.zsh.shellAliases.rebuild = "sudo nixos-rebuild switch";
-  programs.ssh.enable = true;
 
   home.file."Pictures/wallpaper.png".source = ../../../assets/flake-wallpaper.png;
 
@@ -44,9 +43,8 @@
       localsend
       inputs.zen-browser.packages."${pkgs.system}".default
     ];
+
     sessionVariables = {
-      # Point to user key in home directory (not /etc/sops/age/)
-      # The system module will use /etc/sops/age/keys.txt for boot-time decryption
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
     };
   };

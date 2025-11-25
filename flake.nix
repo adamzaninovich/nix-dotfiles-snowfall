@@ -5,6 +5,7 @@
     experimental-features = [ "nix-command" "flakes" ];
   };
 
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -42,7 +43,6 @@
   };
 
   outputs = inputs:
-
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
       src = ./.;
@@ -63,6 +63,10 @@
       };
 
       homes.users."adam@rocinante".modules = with inputs; [
+        mac-app-util.homeManagerModules.default
+      ];
+
+      homes.users."a.zaninovich@pallas".modules = with inputs; [
         mac-app-util.homeManagerModules.default
       ];
 

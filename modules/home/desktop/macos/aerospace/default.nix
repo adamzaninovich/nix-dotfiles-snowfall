@@ -4,37 +4,155 @@ with lib;
 
 let
   cfg = config.bravo.desktop.macos.aerospace;
+  rosepine = lib.bravo.rose_pine;
+
+  # Convert Rosé Pine colors to 0xAARRGGBB format (borders format)
+  # TODO: move to bravo.desktop.theme
+  toBorders = color: "0xff${color}";
+
+  # Rosé Pine Moon colors
+  colors = {
+    transparent = "0x00${rosepine.moon.base}";
+    base = toBorders rosepine.moon.base;
+    surface = toBorders rosepine.moon.surface;
+    overlay = toBorders rosepine.moon.overlay;
+    muted = toBorders rosepine.moon.muted;
+    subtle = toBorders rosepine.moon.subtle;
+    text = toBorders rosepine.moon.text;
+    love = toBorders rosepine.moon.love;
+    gold = toBorders rosepine.moon.gold;
+    rose = toBorders rosepine.moon.rose;
+    pine = toBorders rosepine.moon.pine;
+    foam = toBorders rosepine.moon.foam;
+    iris = toBorders rosepine.moon.iris;
+    highlightLow = toBorders rosepine.moon.highlightLow;
+    highlightMed = toBorders rosepine.moon.highlightMed;
+    highlightHigh = toBorders rosepine.moon.highlightHigh;
+  };
 in
 {
   options.bravo.desktop.macos.aerospace = {
     enable = mkEnableOption "AeroSpace tiling window manager";
+
+    borders = {
+      width = mkOption {
+            type = types.float;
+            default = 5.0;
+            description = "Border width in pixels";
+      };
+
+      active_color = mkOption {
+            type = types.str;
+            default = colors.gold;
+            description = "Color for active window border (0xAARRGGBB format)";
+      };
+
+      inactive_color = mkOption {
+            type = types.str;
+            default = colors.transparent;
+            description = "Color for inactive window border (0xAARRGGBB format)";
+      };
+
+      hidpi = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Enable HiDPI support";
+      };
+
+      style = mkOption {
+            type = types.enum [ "round" "square" ];
+            default = "round";
+            description = "Border corner style";
+      };
+
+      blur = mkOption {
+            type = types.float;
+            default = 0.0;
+            description = "Blur radius for borders";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
-    # Install AeroSpace via homebrew (since it's not in nixpkgs)
-    # Users will need to install via: brew install --cask nikitabobko/tap/aerospace
+    home.packages = [
+      (pkgs.writeShellApplication {
+        name = "borders-run";
+        runtimeInputs = [ pkgs.unstable.jankyborders ];
+        text = ''
+          exec borders \
+            active_color=${cfg.borders.active_color} \
+            inactive_color=${cfg.borders.inactive_color} \
+            width=${toString cfg.borders.width} \
+            ${if cfg.borders.hidpi then "hidpi=on" else "hidpi=off"} \
+            style=${cfg.borders.style} \
+            ${lib.optionalString (cfg.borders.blur > 0.0) "blur_radius=${toString cfg.borders.blur}"} \
+            >>/tmp/borders.out.log 2>>/tmp/borders.err.log
+        '';
+      })
+    ];
 
-    # AeroSpace configuration
     xdg.configFile."aerospace/aerospace.toml".text = ''
       # Reference: https://github.com/nikitabobko/AeroSpace
 
       # Start AeroSpace at login
       start-at-login = true
 
+      # When AeroSpace starts, enforce accordion layout and handle fallback if external is missing
+      after-startup-command = [
+        # Force accordion on both
+        'layout h_accordion',
+        'focus-monitor next',
+        'layout h_accordion',
+        'focus-monitor prev',
+
+        # Start Borders
+        'exec-and-forget ${config.home.profileDirectory}/bin/borders-run'
+
+        # Start Bar
+        # 'exec-and-forget sketchybar'
+      ]
+
+      # exec-on-workspace-change = ['/bin/bash', '-c',
+      #   'sketchybar --trigger aerospace_workspace_change FOCUSED=$AEROSPACE_FOCUSED_WORKSPACE'
+      # ]
+
       # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
       enable-normalization-flatten-containers = true
       enable-normalization-opposite-orientation-for-nested-containers = true
 
-      # Mouse follows focus
-      on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+      accordion-padding = 30
+
+      # Possible values: tiles|accordion
+      default-root-container-layout = 'accordion'
+
+      # Possible values: horizontal|vertical|auto
+      # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
+      #               tall monitor (anything higher than wide) gets vertical orientation
+      default-root-container-orientation = 'auto'
+
+      # Mouse lazily follows any focus (window or workspace)
+      on-focus-changed = ['move-mouse window-lazy-center']
+
+      # Static assignment when both monitors are connected
+      [workspace-to-monitor-force-assignment]
+      1  = "built-in"
+      2  = "main"
+      3  = "main"
+      4  = "main"
+      5  = "main"
+      6  = "main"
+      7  = "main"
+      8  = "main"
+      9  = "main"
+      10 = "main"
 
       # Gaps between windows
       [gaps]
       inner.horizontal = 4
       inner.vertical   = 4
       outer.left       = 4
-      outer.bottom     = 4
-      outer.top        = 4
+      outer.bottom     = 2
+      outer.top        = 2
       outer.right      = 4
 
       # Mode descriptions
@@ -53,6 +171,14 @@ in
       # - Arrows:         left, down, up, right
 
       # All possible modifiers: cmd, alt, ctrl, shift
+
+      # Alt+Enter → new Ghostty window on current workspace
+      # alt-enter = '''exec-and-forget osascript
+      #   -e 'tell application "Ghostty" to activate'
+      #   -e 'delay 0.05'
+      #   -e 'tell application "System Events" to keystroke "n" using command down'
+      # '''
+      alt-enter = "exec-and-forget open -n -a Ghostty"
 
       # Vim-style focus movement
       alt-h = 'focus left'
@@ -93,6 +219,11 @@ in
       alt-shift-9 = 'move-node-to-workspace 9'
       alt-shift-0 = 'move-node-to-workspace 10'
 
+      # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+      alt-tab = 'workspace-back-and-forth'
+      # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
+      alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
       # Layout toggles
       alt-f = 'fullscreen'
       alt-s = 'layout v_accordion'  # stacking
@@ -107,12 +238,12 @@ in
 
       # Resize mode bindings
       [mode.resize.binding]
+      esc = 'mode main'
+      enter = 'mode main'
       h = 'resize width -50'
       j = 'resize height +50'
       k = 'resize height -50'
       l = 'resize width +50'
-      enter = 'mode main'
-      esc = 'mode main'
 
       # Service mode bindings
       [mode.service.binding]
@@ -120,8 +251,15 @@ in
       r = ['flatten-workspace-tree', 'mode main']
       f = ['layout floating tiling', 'mode main']
       backspace = ['close-all-windows-but-current', 'mode main']
+      # Quit AeroSpace
+      q = "exec-and-forget bash -c \"pkill -x borders || true; osascript -e 'tell application \\\"AeroSpace\\\" to quit'\""
+      # Relaunch borders with current settings
+      b = "exec-and-forget bash -lc 'pkill -x borders || true; exec ${config.home.profileDirectory}/bin/borders-run'"
+      # Stop borders
+      shift-b = "exec-and-forget bash -lc 'pkill -x borders'"
 
       # Workspace to monitor assignment (optional, adjust to your setup)
+      # get app id: osascript -e 'id of app "My App"'
       [[on-window-detected]]
       if.app-id = 'com.apple.systempreferences'
       run = 'layout floating'
@@ -129,21 +267,15 @@ in
       [[on-window-detected]]
       if.app-id = 'com.apple.ActivityMonitor'
       run = 'layout floating'
+
+      [[on-window-detected]]
+      if.app-id = 'cc.ffitch.shottr'
+      run = 'layout floating'
     '';
 
-    # Note: AeroSpace must be installed via Homebrew
     # Add installation instructions to home.file
     home.file.".config/aerospace/README.md".text = ''
       # AeroSpace Installation
-
-      AeroSpace is not available in nixpkgs, so it must be installed via Homebrew:
-
-      ```bash
-      brew install --cask nikitabobko/tap/aerospace
-      ```
-
-      After installation, the configuration in `~/.config/aerospace/aerospace.toml`
-      will be used automatically.
 
       To start AeroSpace:
       - It will auto-start at login (configured in aerospace.toml)
@@ -161,8 +293,8 @@ in
       - `Alt+Shift+;`: Enter service mode
 
       ## Resize Mode
-      - `H/J/K/L`: Resize window
       - `Enter/Esc`: Exit resize mode
+      - `H/J/K/L`: Resize window
 
       ## Service Mode
       - `Esc`: Reload config

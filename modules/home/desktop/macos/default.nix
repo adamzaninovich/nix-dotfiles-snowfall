@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, pkgs, config, ... }:
 
 with lib;
 
@@ -11,10 +11,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      unstable.aerospace
+      unstable.sketchybar
+      unstable.jankyborders
+    ];
+
     bravo.desktop.macos = {
       aerospace.enable = true;
       sketchybar.enable = true;
-      borders.enable = true;
     };
   };
 }

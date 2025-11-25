@@ -23,15 +23,13 @@
 
     doom-emacs.enable = true;
     comic-code-fonts.enable = true;
-    desktop.macos.enable = false;
+    desktop.macos.enable = true;
 
     lang.elixir.enable = true;
 
     # Work-specific modules
     dk.aws-cia.enable = true;
   };
-
-  programs.ssh.enable = true;
 
   home = {
     username = "a.zaninovich";
@@ -44,7 +42,7 @@
       opencv
       postgresql_16
 
-      # macOS-specific packages
+      # macOS-common packages
       age
       sops
       localsend
@@ -60,11 +58,12 @@
       python314
       rustup
       shellcheck
-      stow
+      inputs.zen-browser.packages."${pkgs.system}".default
     ];
 
     sessionVariables = {
       CLAUDE_CODE_USE_BEDROCK = "1";
+      SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
     };
   };
 

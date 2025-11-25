@@ -110,6 +110,11 @@ in
         KbdInteractiveAuthentication = false;
         PermitRootLogin = "no";
       };
+      # Don't accept TERM from SSH clients - use the shell's default instead
+      # This prevents terminals like Ghostty from overriding TERM with their own values
+      extraConfig = ''
+        AcceptEnv LANG LC_*
+      '';
     };
 
     # Enable Wayland and Hyprland

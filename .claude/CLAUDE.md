@@ -8,6 +8,7 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 
 **Current Systems**:
 - `tachi` - NixOS x86_64-linux with Hyprland desktop environment
+- `wsl` - NixOS x86_64-linux running in Windows 11 WSL2
 - `rocinante` - macOS aarch64-darwin with nix-darwin
 - `pallas` - macOS aarch64-darwin work laptop (nix-darwin)
 
@@ -21,6 +22,9 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 ```bash
 # NixOS (tachi)
 sudo nixos-rebuild switch --flake .#tachi
+
+# NixOS WSL (wsl)
+sudo nixos-rebuild switch --flake .#wsl
 
 # macOS (rocinante)
 darwin-rebuild switch --flake .#rocinante
@@ -117,13 +121,15 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 - `bravo.doom-emacs` - Doom Emacs
 - `bravo.doom-fonts` - Doom Emacs fonts
 - `bravo.ghostty` - Terminal emulator (config only on macOS; package + config on Linux)
-- `bravo.git` - Git config
 - `bravo.gpg` - GPG + agent
 - `bravo.bat` - Better cat
 - `bravo.direnv` - direnv integration
 - `bravo.claude` - Claude Code CLI
 - `bravo.comic-code-fonts` - Comic Code font (uses SOPS for font files)
 - `bravo.lang.elixir` - Elixir environment
+
+**Always-On Modules** (No enable option, auto-applied to all home configs):
+- `git` - Git and GitHub CLI configuration (applies everywhere, no `bravo.git.enable` needed)
 
 **System Modules** (Auto-applied, not namespaced):
 - `modules/nixos/sops` - SOPS secrets for NixOS (uses upstream `sops.*` options)
@@ -190,6 +196,8 @@ home-manager switch --flake .#adam@rocinante
 ### Secrets Management
 
 **Current Host Keys**:
+- `wsl`: `age1dj7j53uh0nu25v0yxrfvgsufuzjqwpghtnusaguur56cv8522y2s27n0r0`
+  - note: may need to be updated to use /etc/sops/age/ dir for keys
 - `tachi` (NixOS):
   - System key at `/etc/sops/age/tachi.txt` (for boot-time decryption)
   - User key at `~/.config/sops/age/tachi.txt` (for manual editing)
@@ -608,6 +616,15 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Users: `mutableUsers = false` - all user management is declarative
 - SSH: enabled, password auth disabled, key-based only
 - Security: Passwordless sudo for adam
+
+**wsl** (NixOS x86_64-linux):
+- Platform: Windows 11 WSL2 (nixos-wsl)
+- Docker: Docker Desktop integration enabled
+- Network: Custom DNS (10.1.1.8, 10.1.1.9), interop enabled
+- Users: `mutableUsers = false` - declarative user management with SOPS password
+- SSH: enabled, password auth disabled, key-based only, start-on-demand
+- Security: Passwordless sudo for adam, SSH_AUTH_SOCK preserved
+- Shell: zsh with development tools (Elixir, Neovim, Doom Emacs)
 
 **rocinante** (macOS aarch64-darwin):
 - Personal macOS laptop

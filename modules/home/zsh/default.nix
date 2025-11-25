@@ -73,6 +73,9 @@ in
         initContent =
           let
             zshConfigEarlyInit = lib.mkOrder 500 ''
+              # If not running interactively, don't do anything
+              [[ -o interactive ]] || return
+
               # Clear screen and remove last login message
               # printf '\33c\e[3J'
             '';

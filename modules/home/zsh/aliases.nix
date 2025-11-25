@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  # TODO: remember to add aws-cia for dk macbook when setting that up
   programs.zsh.shellAliases = {
     Settings = "cd ~/.config/snowfall && nvim .";
 
@@ -507,14 +506,11 @@
         elif [[ "$(uname)" == "Darwin" ]]; then
           # macOS host with nix-darwin + home-manager
           ohai "Detected macOS host, running darwin-rebuild..."
-          sudo darwin-rebuild switch --flake ~/.config/snowfall
-
-          if [[ $? -eq 0 ]]; then
-            ohai "Darwin rebuild successful, now running snowfall..."
-            # home-manager switch --flake ~/.config/snowfall
+          if [[ "$(hostname)" == "a.zaninovich-L2V57Q9LQ5" ]]; then
+            ohai "Detected work laptop with hostname reset"
+            sudo darwin-rebuild switch --flake ~/.config/snowfall#pallas
           else
-            error "Darwin rebuild failed, skipping home-manager"
-            return 1
+            sudo darwin-rebuild switch --flake ~/.config/snowfall
           fi
         else
           # Other Linux distro with home-manager only

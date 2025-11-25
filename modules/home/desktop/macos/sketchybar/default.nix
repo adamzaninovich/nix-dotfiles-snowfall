@@ -68,23 +68,20 @@ in
                              icon.padding_right=4
 
         ##### Adding Left Items #####
-        # Spaces (workspaces)
-        SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
-        for i in "''${!SPACE_ICONS[@]}"
-        do
-          sid=$(($i+1))
-          sketchybar --add space space.$sid left \
-                     --set space.$sid associated_space=$sid \
-                                      icon=''${SPACE_ICONS[i]} \
-                                      icon.padding_left=8 \
-                                      icon.padding_right=8 \
-                                      background.color=${colors.overlay} \
-                                      background.corner_radius=5 \
-                                      background.height=20 \
-                                      background.drawing=on \
-                                      label.drawing=off \
-                                      script="$PLUGIN_DIR/space.sh" \
-                                      click_script="aerospace workspace $sid"
+        sketchybar --add event aerospace_workspace_change
+        for sid in $(aerospace list-workspaces --all); do
+          sketchybar --add item space.$sid left \
+            --subscribe space.$sid aerospace_workspace_change \
+            --set space.$sid \
+            icon.padding_left=8 \
+            icon.padding_right=8 \
+            background.color=${colors.overlay} \
+            background.corner_radius=5 \
+            background.height=20 \
+            background.drawing=on \
+            label="$sid" \
+            click_script="aerospace workspace $sid" \
+            script="$CONFIG_DIR/plugins/aerospace.sh $sid"
         done
 
         ##### Adding Right Items #####
@@ -109,6 +106,22 @@ in
 
         ##### Finalizing Setup #####
         sketchybar --update
+      '';
+    };
+
+
+
+    # AeroSpace indicator script
+    xdg.configFile."sketchybar/plugins/aerospace.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+
+        if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
+            sketchybar --set $NAME background.drawing=on
+        else
+            sketchybar --set $NAME background.drawing=off
+        fi
       '';
     };
 

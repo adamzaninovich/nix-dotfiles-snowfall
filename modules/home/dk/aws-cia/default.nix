@@ -134,6 +134,18 @@ in
             ;;
         esac
       }
+
+      # Tab completion for aws function
+      _aws_completion() {
+        local -a subcommands
+        subcommands=(
+          'setup:Store AWS CIA credentials in keychain'
+          'login:Authenticate with AWS using stored credentials'
+          'update:Update REDACTED_TOOL dotnet tool'
+        )
+        _describe 'aws subcommand' subcommands
+      }
+      compdef _aws_completion aws
     '';
   };
 }

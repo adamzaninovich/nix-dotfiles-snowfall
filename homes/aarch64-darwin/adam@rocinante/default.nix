@@ -28,16 +28,17 @@
     lang.elixir.enable = true;
   };
 
-  programs.ssh.enable = true;
-
   home = {
     username = "adam";
     homeDirectory = "/Users/adam";
     stateVersion = "25.05";
+
     packages = with pkgs; [
-      # rocinante only
+      # rocinante-specific packages
       ntfs3g
-      # macOS-specific packages
+      shottr
+      stow
+      # macOS-common packages
       age
       sops
       localsend
@@ -53,9 +54,8 @@
       python314
       rustup
       shellcheck
-      # shottr
-      stow
     ];
+
     sessionVariables = {
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
     };

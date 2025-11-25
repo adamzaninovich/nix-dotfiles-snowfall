@@ -13,6 +13,8 @@ This directory contains encrypted secrets managed by sops-nix.
 **Current Hosts:**
 - `tachi`: `~/.config/sops/age/tachi.txt` → `age1xeq2p622qm5ftc7kl23welzvc3552ngqc82df8t947u696ysxgts0mddmt`
 - `rocinante`: `~/.config/sops/age/rocinante.txt` → `age13nu8e3vrjek227g7rjq8jqerzpeft7xwcs2zgxajpg8gztzggv4ses4v8h`
+- `pallas`: `~/.config/sops/age/pallas.txt` → `age1s20cczctqy8w7l7frnpwfp70rdhz8r8ewm0t298q4vt8leyr7u6qnprs7a`
+- `wsl`: `~/.config/sops/age/wsl.txt` → `age1dj7j53uh0nu25v0yxrfvgsufuzjqwpghtnusaguur56cv8522y2s27n0r0`
 
 ## Editing Secrets on Existing Machine
 
