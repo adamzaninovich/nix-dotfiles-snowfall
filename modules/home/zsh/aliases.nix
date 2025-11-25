@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  # TODO: remember to add aws-cia for dk macbook when setting that up
   programs.zsh.shellAliases = {
     Settings = "cd ~/.config/snowfall && nvim .";
 
