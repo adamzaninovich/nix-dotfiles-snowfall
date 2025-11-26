@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = [
-      pkgs.unstable.claude-code
+      pkgs.bravo.claude-code
     ];
   };
 }

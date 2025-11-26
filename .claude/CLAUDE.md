@@ -284,8 +284,11 @@ See `secrets/README.md` for complete setup, reencryption, and troubleshooting gu
 # Update all inputs
 nix flake update
 
-# Update specific input
-nix flake lock --update-input nixpkgs
+# Update specific input (preferred syntax)
+nix flake update nixpkgs
+
+# Update specific input (deprecated - still works but will be removed)
+# nix flake lock --update-input nixpkgs
 
 # Check flake
 nix flake check
