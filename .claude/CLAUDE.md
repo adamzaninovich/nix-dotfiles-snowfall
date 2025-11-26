@@ -17,6 +17,12 @@ This is a NixOS dotfiles repository using **Snowfall Lib** - a convention-over-c
 **Home Manager API Notes**:
 - Use `programs.zsh.initContent` instead of deprecated `programs.zsh.initExtra`
 - Both accept the same values (strings, mkMerge, mkOrder), but initContent is the current API
+- For activation scripts, use `config.lib.dag.entryAfter` (NOT `lib.hm.dag.entryAfter` - that doesn't exist in Snowfall context)
+  ```nix
+  home.activation.myScript = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    # script contents
+  '';
+  ```
 
 **Build Commands**:
 ```bash
