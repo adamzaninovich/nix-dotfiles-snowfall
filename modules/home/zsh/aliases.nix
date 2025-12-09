@@ -419,7 +419,35 @@
       }
 
       review() {
-        claude "/review $1"
+        local pr_number="$1"
+
+        # Validate PR number exists and is numeric
+        if [[ -z "$pr_number" ]]; then
+          error "Usage: review <pr_number> [optional instructions...]"
+          return 1
+        fi
+
+        if ! [[ "$pr_number" =~ ^[0-9]+$ ]]; then
+          error "First argument must be a PR number (got: $pr_number)"
+          return 1
+        fi
+
+        # Check git status is clean
+        if ! git diff-index --quiet HEAD -- 2>/dev/null; then
+          error "Working directory is dirty. Please commit or stash changes before switching branches."
+          return 1
+        fi
+
+        # Checkout the PR branch
+        ohai "Checking out PR #$pr_number..."
+        if ! gh pr checkout "$pr_number"; then
+          error "Failed to checkout PR #$pr_number"
+          return 1
+        fi
+
+        # Run claude review with all original arguments
+        ohai "Starting Claude review..."
+        claude "/review $*"
       }
 
       # claude() {
