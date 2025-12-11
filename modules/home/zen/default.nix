@@ -63,11 +63,15 @@ in
       };
 
       path = mkOption {
-        type = str;
+        type = types.nullOr str;
+        default = null;
         description = ''
           The profile directory name (e.g., "xmffz6yt.Default (release)").
           Find your existing profile in ~/Library/Application Support/zen/Profiles/
           and use the folder name that contains your data (bookmarks, history, etc).
+
+          If not set, Zen is installed without profile management - useful for new
+          machines where no profile exists yet.
         '';
         example = "xmffz6yt.Default (release)";
       };
@@ -83,7 +87,9 @@ in
     # We compute the Firefox install ID from the current zen app path and
     # pre-populate installs.ini to point to our profile, preventing Zen
     # from creating a new profile on each flake update
-    home.activation.zenProfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    #
+    # Only runs if profile.path is set - otherwise Zen manages its own profiles
+    home.activation.zenProfiles = mkIf (cfg.profile.path != null) (config.lib.dag.entryAfter [ "writeBoundary" ] ''
       CONFIG_DIR="${configDir}"
       PROFILES_INI="$CONFIG_DIR/profiles.ini"
       INSTALLS_INI="$CONFIG_DIR/installs.ini"
@@ -147,6 +153,6 @@ EOF
         run chmod 644 "$PROFILES_INI"
         run rm -f "$INSTALLS_INI"
       fi
-    '';
+    '');
   };
 }

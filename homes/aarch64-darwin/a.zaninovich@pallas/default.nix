@@ -33,7 +33,7 @@
     # Zen browser with stable profile (prevents new profile on flake updates)
     zen = {
       enable = true;
-      profile.path = "xmffz6yt.Default (release)";
+      profile.path = "adam.Default";
     };
   };
 
