@@ -29,6 +29,7 @@
 
     # Work-specific modules
     dk.aws-cia.enable = true;
+    jiratui.enable = true;
 
     # Zen browser with stable profile (prevents new profile on flake updates)
     zen = {

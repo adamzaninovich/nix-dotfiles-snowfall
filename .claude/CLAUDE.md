@@ -652,3 +652,4 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Namespace: `bravo` (set in `snowfall.namespace`)
 - Inputs: nixpkgs (nixos-25.05), unstable, home-manager, sops-nix, darwin, mac-app-util, nixos-hardware, nixos-wsl, zen-browser
 - Systems: x86_64-linux (NixOS), aarch64-darwin (macOS)
+- generally don't run rebuilds/switch yourself, just tell the user to do it
