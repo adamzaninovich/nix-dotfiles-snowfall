@@ -46,6 +46,7 @@
       bambu-studio
       signal-desktop
       localsend
+      bravo.openbubbles
     ];
 
     sessionVariables = {
