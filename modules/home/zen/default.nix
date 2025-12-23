@@ -25,21 +25,21 @@ let
   profilesIni = pkgs.writeText "zen-profiles.ini" profilesIniContent;
 
   # Python script to compute Firefox install ID hash
-  # Firefox uses CityHash64 on the UTF-16-LE encoded path to Contents/MacOS
+  # Firefox uses CityHash64 on the UTF-16-LE encoded path:
+  # - macOS: hashes {app_path}/Contents/MacOS
+  # - Linux: hashes the directory containing the binary
   computeInstallId = pkgs.writeScript "compute-zen-install-id" ''
     #!${pkgs.python3}/bin/python3
     import sys
     from clickhouse_cityhash.cityhash import CityHash64
 
     if len(sys.argv) != 2:
-        print("Usage: compute-zen-install-id <path-to-app>", file=sys.stderr)
+        print("Usage: compute-zen-install-id <path>", file=sys.stderr)
         sys.exit(1)
 
-    app_path = sys.argv[1]
-    # Firefox hashes the Contents/MacOS directory path
-    macos_path = f"{app_path}/Contents/MacOS"
+    path = sys.argv[1]
     # Encode as UTF-16-LE and compute CityHash64
-    path_bytes = macos_path.encode("utf-16-le")
+    path_bytes = path.encode("utf-16-le")
     hash_value = CityHash64(path_bytes)
     # Output as uppercase hex
     print(f"{hash_value:016X}")
@@ -66,9 +66,13 @@ in
         type = types.nullOr str;
         default = null;
         description = ''
-          The profile directory name (e.g., "xmffz6yt.Default (release)").
-          Find your existing profile in ~/Library/Application Support/zen/Profiles/
-          and use the folder name that contains your data (bookmarks, history, etc).
+          The profile directory name containing your data (bookmarks, history, etc).
+
+          macOS: Find in ~/Library/Application Support/zen/Profiles/
+                 Example: "xmffz6yt.Default (release)"
+
+          Linux: Find in ~/.zen/ (profiles are at the top level, not in a subdirectory)
+                 Example: "abc123xy.Default (release)"
 
           If not set, Zen is installed without profile management - useful for new
           machines where no profile exists yet.
@@ -94,8 +98,16 @@ in
       PROFILES_INI="$CONFIG_DIR/profiles.ini"
       INSTALLS_INI="$CONFIG_DIR/installs.ini"
 
-      # Ensure config directory exists
-      run mkdir -p "$CONFIG_DIR/Profiles"
+      # Platform-specific profile path and app extraction
+      ${if pkgs.stdenv.isDarwin then ''
+        # macOS: profiles in Profiles/ subdirectory
+        PROFILE_PATH="Profiles/${cfg.profile.path}"
+        run mkdir -p "$CONFIG_DIR/Profiles"
+      '' else ''
+        # Linux: profiles directly in ~/.zen
+        PROFILE_PATH="${cfg.profile.path}"
+        run mkdir -p "$CONFIG_DIR"
+      ''}
 
       # Remove any existing symlinks (from previous home-manager generations)
       if [ -L "$PROFILES_INI" ]; then
@@ -105,13 +117,44 @@ in
         run rm "$INSTALLS_INI"
       fi
 
-      # Find the zen app path from the wrapper script
-      ZEN_WRAPPER="${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen"
-      ZEN_APP_PATH=$(${pkgs.gnugrep}/bin/grep -o '/nix/store/[^"]*\.app' "$ZEN_WRAPPER" | head -1)
+      # Find the zen wrapper
+      ${if pkgs.stdenv.isDarwin then ''
+        ZEN_WRAPPER="${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen"
+      '' else ''
+        # Linux: Use zen-beta binary which contains the wrapper info
+        ZEN_WRAPPER="${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen-beta"
+      ''}
 
-      if [ -n "$ZEN_APP_PATH" ] && [ -d "$ZEN_APP_PATH" ]; then
-        # Compute install ID using CityHash64 on the Contents/MacOS path (UTF-16-LE encoded)
-        INSTALL_ID=$(${computeInstallIdWrapper} "$ZEN_APP_PATH")
+      ${if pkgs.stdenv.isDarwin then ''
+        # macOS: extract .app bundle path and hash Contents/MacOS
+        ZEN_APP_PATH=$(${pkgs.gnugrep}/bin/grep -o '/nix/store/[^"]*\.app' "$ZEN_WRAPPER" | head -1)
+        if [ -n "$ZEN_APP_PATH" ] && [ -d "$ZEN_APP_PATH" ]; then
+          HASH_PATH="$ZEN_APP_PATH/Contents/MacOS"
+        else
+          HASH_PATH=""
+        fi
+      '' else ''
+        # Linux: Zen hashes the lib/zen-bin-<version> directory
+        # Extract the wrapped binary path from the wrapper script
+        ZEN_WRAPPED=$(${pkgs.binutils-unwrapped}/bin/strings "$ZEN_WRAPPER" | ${pkgs.gnugrep}/bin/grep -o '/nix/store/[^"]*/bin/\.zen-beta-wrapped' | head -1)
+        if [ -n "$ZEN_WRAPPED" ]; then
+          # Resolve symlink to get the actual binary location
+          # e.g., /nix/store/.../lib/zen-bin-1.17.15b/zen
+          ZEN_REAL=$(readlink -f "$ZEN_WRAPPED" 2>/dev/null)
+          if [ -n "$ZEN_REAL" ]; then
+            # Hash the parent directory (lib/zen-bin-<version>)
+            HASH_PATH=$(dirname "$ZEN_REAL")
+          else
+            HASH_PATH=""
+          fi
+        else
+          HASH_PATH=""
+        fi
+      ''}
+
+      if [ -n "$HASH_PATH" ]; then
+        # Compute install ID using CityHash64 on the path (UTF-16-LE encoded)
+        INSTALL_ID=$(${computeInstallIdWrapper} "$HASH_PATH")
 
         if [ -n "$INSTALL_ID" ]; then
           # Write profiles.ini with BOTH the profile AND the install section
@@ -120,7 +163,7 @@ in
 [Profile0]
 Name=${cfg.profile.name}
 IsRelative=1
-Path=Profiles/${cfg.profile.path}
+Path=$PROFILE_PATH
 Default=1
 
 [General]
@@ -128,7 +171,7 @@ StartWithLastProfile=1
 Version=2
 
 [Install$INSTALL_ID]
-Default=Profiles/${cfg.profile.path}
+Default=$PROFILE_PATH
 Locked=1
 EOF
           run chmod 644 "$PROFILES_INI"
@@ -136,11 +179,11 @@ EOF
           # Write installs.ini with the computed install ID pointing to our profile
           cat > "$INSTALLS_INI" << EOF
 [$INSTALL_ID]
-Default=Profiles/${cfg.profile.path}
+Default=$PROFILE_PATH
 Locked=1
 EOF
           run chmod 644 "$INSTALLS_INI"
-          verboseEcho "Zen Browser: configured install ID $INSTALL_ID -> profile '${cfg.profile.path}'"
+          verboseEcho "Zen Browser: configured install ID $INSTALL_ID -> profile '$PROFILE_PATH'"
         else
           verboseEcho "Zen Browser: WARNING - could not compute install ID, using default profiles.ini"
           run cp "${profilesIni}" "$PROFILES_INI"
@@ -148,7 +191,7 @@ EOF
           run rm -f "$INSTALLS_INI"
         fi
       else
-        verboseEcho "Zen Browser: WARNING - could not find zen app path, using default profiles.ini"
+        verboseEcho "Zen Browser: WARNING - could not find zen binary path, using default profiles.ini"
         run cp "${profilesIni}" "$PROFILES_INI"
         run chmod 644 "$PROFILES_INI"
         run rm -f "$INSTALLS_INI"
