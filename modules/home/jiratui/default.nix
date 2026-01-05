@@ -30,6 +30,17 @@ in
           jira_sprint_field_id: 'customfield_10020'
           jira_account_id: 'REDACTED_ACCOUNT_ID'
 
+          tui_title_include_jira_server_title: True
+          theme: catppuccin-mocha
+
+          on_start_up_only_fetch_projects: False
+          search_on_startup: True
+
+          git_repositories:
+           1:
+              name: 'FIST'
+              path: '~/projects/fist/.git'
+
           pre_defined_jql_expressions:
             1:
               label: "My issues - current sprint"
