@@ -50,6 +50,12 @@ let
     export PYTHONPATH="${pkgs.python3Packages.clickhouse-cityhash}/${pkgs.python3.sitePackages}"
     exec ${computeInstallId} "$@"
   '';
+
+  # Use our signed wrapper on Darwin, upstream package on Linux
+  # TODO: Remove zen-browser-temp-signing-fix once upstream fixes the issue
+  zenPackage = if pkgs.stdenv.isDarwin
+    then pkgs.bravo.zen-browser-temp-signing-fix
+    else inputs.zen-browser.packages.${pkgs.system}.default;
 in
 {
   options.bravo.zen = with types; {
@@ -83,9 +89,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [
-      inputs.zen-browser.packages.${pkgs.system}.default
-    ];
+    home.packages = [ zenPackage ];
 
     # Use activation script to write profiles.ini and installs.ini
     # We compute the Firefox install ID from the current zen app path and
@@ -117,22 +121,17 @@ in
         run rm "$INSTALLS_INI"
       fi
 
-      # Find the zen wrapper
       ${if pkgs.stdenv.isDarwin then ''
-        ZEN_WRAPPER="${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen"
+        # macOS: directly use the app path from zenPackage (not from wrapper script)
+        # The wrapper script may contain stale paths from the upstream package
+        HASH_PATH="${zenPackage}/Applications/Zen Browser (Beta).app/Contents/MacOS"
       '' else ''
         # Linux: Use zen-beta binary which contains the wrapper info
-        ZEN_WRAPPER="${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen-beta"
+        ZEN_WRAPPER="${zenPackage}/bin/zen-beta"
       ''}
 
       ${if pkgs.stdenv.isDarwin then ''
-        # macOS: extract .app bundle path and hash Contents/MacOS
-        ZEN_APP_PATH=$(${pkgs.gnugrep}/bin/grep -o '/nix/store/[^"]*\.app' "$ZEN_WRAPPER" | head -1)
-        if [ -n "$ZEN_APP_PATH" ] && [ -d "$ZEN_APP_PATH" ]; then
-          HASH_PATH="$ZEN_APP_PATH/Contents/MacOS"
-        else
-          HASH_PATH=""
-        fi
+        : # HASH_PATH already set above
       '' else ''
         # Linux: Zen hashes the lib/zen-bin-<version> directory
         # Extract the wrapped binary path from the wrapper script
