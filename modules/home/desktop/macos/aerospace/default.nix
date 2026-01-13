@@ -271,6 +271,12 @@ in
       [[on-window-detected]]
       if.app-id = 'cc.ffitch.shottr'
       run = 'layout floating'
+
+      # Zen browser Picture-in-Picture windows should float
+      [[on-window-detected]]
+      if.app-id = 'app.zen-browser.zen'
+      if.window-title-regex-substring = 'Picture-in-Picture'
+      run = 'layout floating'
     '';
 
     # Add installation instructions to home.file
