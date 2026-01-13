@@ -44,13 +44,13 @@ in
         # Start the aws-cia login command
         spawn aws-cia login
 
-        # Handle username prompt
-        expect "Enter Username:" {
+        # Handle username prompt (may include default in brackets like "Enter Username [user]:")
+        expect -re "Enter Username.*:" {
           send "$username\r"
         }
 
         # Handle password prompt
-        expect "Enter your password:" {
+        expect -re "Enter your password.*:" {
           send "$password\r"
         }
 

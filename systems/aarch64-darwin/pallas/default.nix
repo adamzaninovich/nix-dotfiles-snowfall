@@ -8,6 +8,10 @@
   networking.hostName = "pallas";
   networking.computerName = "pallas";
 
+  environment.systemPackages = with pkgs; [
+    imagemagick
+  ];
+
   users.users."a.zaninovich" = {
     home = "/Users/a.zaninovich";
     shell = pkgs.zsh;

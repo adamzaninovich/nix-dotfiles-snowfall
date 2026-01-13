@@ -37,7 +37,9 @@ darwin-rebuild switch --flake .#rocinante
 ```
 
 **Architecture**:
-- Namespace: `bravo.*` for all custom options
+- Namespace: `bravo.*` for ALL custom things (modules AND packages)
+  - Modules: `bravo.<module>.enable` (e.g., `bravo.zsh.enable`)
+  - Packages: `pkgs.bravo.<package>` (e.g., `pkgs.bravo.claude-code`)
 - Auto-discovery: File structure = configuration (no manual imports)
 - Git requirement: `git add` files immediately for Snowfall to see them
 - Cross-platform: Shared home modules, platform-specific system modules
@@ -70,7 +72,7 @@ Snowfall Lib uses **automatic discovery** based on directory structure. The file
 │           └── default.nix
 ├── packages/              # Packages (auto-exported to flake packages)
 │   └── <name>/           # e.g., claude-code/ → packages.<system>.claude-code
-│       └── default.nix
+│       └── default.nix   # Referenced as: pkgs.bravo.claude-code
 ├── overlays/              # Overlays (auto-applied everywhere)
 │   └── <name>/           # e.g., unstable/
 │       └── default.nix   # Function: final: prev: { ... }
@@ -85,7 +87,7 @@ Snowfall Lib uses **automatic discovery** based on directory structure. The file
 
 ### How Auto-Discovery Works
 
-1. **Packages** (`packages/<name>/default.nix`) - Exported to `packages.<system>.<name>`
+1. **Packages** (`packages/<name>/default.nix`) - Exported to `packages.<system>.<name>` and available as `pkgs.bravo.<name>`
 2. **Modules** (`modules/{nixos,darwin,home}/<name>/default.nix`) - Auto-applied, create options `bravo.<name>`
 3. **Systems** (`systems/<arch>-<os>/<name>/default.nix`) - Exported to `nixosConfigurations.<name>` or `darwinConfigurations.<name>`
 4. **Homes** (`homes/<arch>/<user@host>/default.nix`) - Exported to `homeConfigurations."<user@host>"`
@@ -99,6 +101,31 @@ All custom modules use the `bravo` namespace (configured in `flake.nix` as `snow
 - Modules create options: `options.bravo.<module-name>.enable`
 - Modules are composable - meta-modules enable sub-modules
 - Example: `bravo.desktop.wayland.enable = true` enables hyprland, waybar, wofi, swaync, gtk
+
+### Package Namespace
+
+**CRITICAL**: Custom packages in `packages/` are ALSO namespaced under `bravo`!
+
+- Custom packages: `pkgs.bravo.<package-name>` (e.g., `pkgs.bravo.claude-code`, `pkgs.bravo.openbubbles`)
+- Nixpkgs packages: `pkgs.<package-name>` (e.g., `pkgs.signal-desktop`, `pkgs.neovim`)
+
+**Examples**:
+```nix
+# In home configuration
+home.packages = with pkgs; [
+  # Nixpkgs packages (no namespace)
+  signal-desktop
+  bambu-studio
+
+  # Custom packages (bravo namespace)
+  bravo.claude-code
+  bravo.openbubbles
+];
+```
+
+**Why**: The namespace prevents naming conflicts and makes it obvious which packages are custom to this flake vs. upstream nixpkgs.
+
+**Common mistake**: Forgetting the `bravo.` prefix when referencing custom packages → results in "undefined variable" errors.
 
 ### Current Module Inventory
 
@@ -652,3 +679,4 @@ Without `git add`, Snowfall's auto-discovery won't find the file.
 - Namespace: `bravo` (set in `snowfall.namespace`)
 - Inputs: nixpkgs (nixos-25.05), unstable, home-manager, sops-nix, darwin, mac-app-util, nixos-hardware, nixos-wsl, zen-browser
 - Systems: x86_64-linux (NixOS), aarch64-darwin (macOS)
+- generally don't run rebuilds/switch yourself, just tell the user to do it

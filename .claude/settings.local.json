@@ -13,7 +13,14 @@
       "WebFetch(domain:rosepinetheme.com)",
       "WebFetch(domain:search.nixos.org)",
       "WebFetch(domain:snowfall.org)",
-      "WebFetch(domain:wiki.nixos.org)"
+      "WebFetch(domain:wiki.nixos.org)",
+      "Bash(journalctl:*)",
+      "Bash(sudo journalctl:*)",
+      "Read(//tmp/**)",
+      "Read(//nix/store/**)",
+      "Bash(gh release list:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

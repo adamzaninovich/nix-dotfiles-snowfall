@@ -25,6 +25,11 @@
     comic-code-fonts.enable = true;
     desktop.wayland.enable = true;
 
+    zen = {
+      enable = true;
+      profile.path = "adam.Default";
+    };
+
     lang.elixir.enable = false;
   };
 
@@ -41,7 +46,7 @@
       bambu-studio
       signal-desktop
       localsend
-      inputs.zen-browser.packages."${pkgs.system}".default
+      bravo.openbubbles
     ];
 
     sessionVariables = {
