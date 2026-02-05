@@ -50,6 +50,9 @@
       postgresql_16
 
       # macOS-common packages
+      bravo.pdftomarkdown
+      pandoc
+      poppler_utils
       age
       sops
       localsend
