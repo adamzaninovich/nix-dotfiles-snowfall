@@ -24,14 +24,21 @@ in
       age.keyFile = osConfig.sops.age.keyFile;
 
       secrets.litellm-virtual-key = {
-        sopsFile = ../../../../secrets/pallas-secrets.yaml;
+        sopsFile = ../../../../secrets/system-secrets.yaml;
         key = "litellm-virtual-key";
+      };
+
+      templates."litellm-env" = {
+        content = ''
+          export ANTHROPIC_AUTH_TOKEN="${config.sops.placeholder.litellm-virtual-key}"
+        '';
+        path = "${config.home.homeDirectory}/.config/litellm/env";
       };
     };
 
     programs.zsh.initContent = lib.mkOrder 500 ''
-      if [ -f "${config.sops.secrets.litellm-virtual-key.path}" ]; then
-        export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.litellm-virtual-key.path})"
+      if [ -f "${config.home.homeDirectory}/.config/litellm/env" ]; then
+        source "${config.home.homeDirectory}/.config/litellm/env"
       fi
     '';
   };

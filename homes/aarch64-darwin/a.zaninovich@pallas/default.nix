@@ -75,6 +75,9 @@
     };
   };
 
+  # sops-nix launchd agent needs /usr/bin in PATH for getconf
+  sops.environment.PATH = lib.mkForce "/usr/bin";
+
   launchd.agents.wheee = {
     enable = true;
     config = {
