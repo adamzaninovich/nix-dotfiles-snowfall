@@ -129,6 +129,10 @@
       wget
       whois
       dig
+      kmod
+      usbutils
+      unzip
+      python3
     ];
   };
 }
