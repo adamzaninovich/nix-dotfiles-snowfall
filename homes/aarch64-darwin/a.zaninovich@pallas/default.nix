@@ -28,7 +28,7 @@
     lang.elixir.enable = true;
 
     # Work-specific modules
-    dk.aws-cia.enable = true;
+    dk.litellm.enable = true;
     jiratui.enable = true;
 
     # Zen browser with stable profile (prevents new profile on flake updates)
@@ -71,7 +71,6 @@
     ];
 
     sessionVariables = {
-      CLAUDE_CODE_USE_BEDROCK = "1";
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
     };
   };

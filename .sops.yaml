@@ -35,6 +35,11 @@ creation_rules:
           - *pallas
           - *wsl
           - *sgate
+  - path_regex: secrets/pallas-secrets\.yaml$
+    key_groups:
+      - age:
+          - *master
+          - *pallas
   - path_regex: secrets/doom-fonts\.tar\.gz$
     key_groups:
       - age:
