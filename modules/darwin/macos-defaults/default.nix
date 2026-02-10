@@ -18,6 +18,8 @@
 
   # ZSH is the default shell for all systems
   programs.zsh.enable = lib.mkDefault true;
+  # Disable system-level compinit — home-manager handles it with caching
+  programs.zsh.enableCompletion = lib.mkDefault false;
 
   # Enable documentation and man pages
   documentation.enable = lib.mkDefault true;

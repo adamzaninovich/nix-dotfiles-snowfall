@@ -58,7 +58,14 @@ in
         ];
 
         completionInit = ''
-          autoload -U compinit && compinit
+          autoload -Uz compinit
+          # Regenerate .zcompdump only once every 24 hours; otherwise use cache
+          local zcompdump="''${ZDOTDIR:-$HOME}/.zcompdump"
+          if [[ ! -f "$zcompdump" || -n "$zcompdump"(N.mh+24) ]]; then
+            compinit
+          else
+            compinit -C
+          fi
 
           # use git completions for g alias
           compdef g=git
