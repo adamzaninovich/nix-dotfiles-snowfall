@@ -103,6 +103,9 @@ in
       ripgrep
       nixfmt-rfc-style
       fontconfig
+
+      # Audio transcription
+      bravo.transcribe-audio
     ];
 
     sessionVariables = {
