@@ -7,6 +7,7 @@ writeShellScriptBin "transcribe-audio" ''
   COMPOSE_DIR="$(${pkgs.coreutils}/bin/dirname "''${COMPOSE_FILE}")"
   SPEAKERS="1"
   HF_TOKEN="''${HF_TOKEN:-}"
+  VERBOSE=0
 
   # Source .env from compose directory if it exists (for HF_TOKEN, etc.)
   if [[ -f "''${COMPOSE_DIR}/.env" ]]; then
@@ -28,6 +29,7 @@ writeShellScriptBin "transcribe-audio" ''
     echo ""
     echo "Options:"
     echo "  -h, --help              Show this help message"
+    echo "  -v, --verbose           Show Docker build output"
     echo "  --speakers N|MIN-MAX    Expected speakers per file (default: 1)"
     echo "                          1 = no diarization"
     echo "                          N = exactly N speakers (e.g., 3)"
@@ -45,6 +47,7 @@ writeShellScriptBin "transcribe-audio" ''
   while [[ ''${#} -gt 0 ]]; do
     case "''${1}" in
       -h|--help) usage ;;
+      -v|--verbose) VERBOSE=1; shift ;;
       --speakers)
         SPEAKERS="''${2}"
         shift 2
@@ -128,8 +131,13 @@ writeShellScriptBin "transcribe-audio" ''
   echo ""
 
   # Ensure Docker image is built
-  echo "Ensuring Docker image is up to date..."
-  docker compose -f "''${COMPOSE_FILE}" build --quiet transcribe
+  if [[ "''${VERBOSE}" -eq 1 ]]; then
+    echo "Building Docker image..."
+    docker compose -f "''${COMPOSE_FILE}" build transcribe
+  else
+    echo "Building Docker image (use -v to show build output)..."
+    docker compose -f "''${COMPOSE_FILE}" build --quiet transcribe
+  fi
   echo ""
 
   # Run transcription

@@ -106,6 +106,7 @@ in
 
       # Audio transcription
       bravo.transcribe-audio
+      bravo.process-transcript
     ];
 
     sessionVariables = {

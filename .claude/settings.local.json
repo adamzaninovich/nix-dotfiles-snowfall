@@ -20,7 +20,9 @@
       "Read(//nix/store/**)",
       "Bash(gh release list:*)",
       "Bash(curl:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:www.pyannote.ai)"
     ],
     "deny": [],
     "ask": []
