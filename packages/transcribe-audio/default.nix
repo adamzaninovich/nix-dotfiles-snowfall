@@ -120,6 +120,9 @@ writeShellScriptBin "transcribe-audio" ''
   fi
 
   echo "Found ''${audio_count} audio file(s) in ''${input_dir}"
+  if [[ -f "''${input_dir}/vocab.txt" ]]; then
+    echo "Vocabulary: vocab.txt found (will use as Whisper prompt)"
+  fi
   if [[ "''${max_spk}" -gt 1 ]]; then
     echo "Diarization: enabled (speakers: ''${SPEAKERS})"
   fi
@@ -138,13 +141,11 @@ writeShellScriptBin "transcribe-audio" ''
     echo "Building Docker image (use -v to show build output)..."
     docker compose -f "''${COMPOSE_FILE}" build --quiet transcribe
   fi
-  echo ""
 
   # Run transcription
   INPUT_DIR="''${input_dir}" OUTPUT_DIR="''${output_dir}" \
     HF_TOKEN="''${HF_TOKEN}" SPEAKERS="''${SPEAKERS}" \
     docker compose -f "''${COMPOSE_FILE}" run --rm transcribe
 
-  echo ""
   echo "Transcripts written to: ''${output_dir}"
 ''
