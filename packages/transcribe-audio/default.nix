@@ -8,6 +8,7 @@ writeShellScriptBin "transcribe-audio" ''
   SPEAKERS="1"
   HF_TOKEN="''${HF_TOKEN:-}"
   VERBOSE=0
+  PROCESS=0
 
   # Source .env from compose directory if it exists (for HF_TOKEN, etc.)
   if [[ -f "''${COMPOSE_DIR}/.env" ]]; then
@@ -29,6 +30,7 @@ writeShellScriptBin "transcribe-audio" ''
     echo ""
     echo "Options:"
     echo "  -h, --help              Show this help message"
+    echo "  -p, --process           Run process-transcript after completion"
     echo "  -v, --verbose           Show Docker build output"
     echo "  --speakers N|MIN-MAX    Expected speakers per file (default: 1)"
     echo "                          1 = no diarization"
@@ -47,6 +49,7 @@ writeShellScriptBin "transcribe-audio" ''
   while [[ ''${#} -gt 0 ]]; do
     case "''${1}" in
       -h|--help) usage ;;
+      -p|--process) PROCESS=1; shift ;;
       -v|--verbose) VERBOSE=1; shift ;;
       --speakers)
         SPEAKERS="''${2}"
@@ -148,4 +151,17 @@ writeShellScriptBin "transcribe-audio" ''
     docker compose -f "''${COMPOSE_FILE}" run --rm transcribe
 
   echo "Transcripts written to: ''${output_dir}"
+
+  # Post-processing: run process-transcript
+  if [[ "''${PROCESS}" -eq 1 ]]; then
+    echo ""
+    echo "Running process-transcript..."
+    process-transcript "''${input_dir}"
+  else
+    echo ""
+    read -rp "Send transcript for processing? [y/N] " answer
+    if [[ "''${answer}" =~ ^[Yy]$ ]]; then
+      process-transcript "''${input_dir}"
+    fi
+  fi
 ''

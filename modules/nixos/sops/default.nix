@@ -24,6 +24,10 @@ in
 
       secrets.adam-password = { neededForUsers = true; };
 
+      secrets.n8n-webhook-token = {
+        owner = "adam";
+      };
+
       secrets.comic-code-fonts = {
         sopsFile = ../../../secrets/comic-code-fonts.tar.gz;
         format = "binary";

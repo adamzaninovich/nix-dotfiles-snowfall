@@ -103,6 +103,7 @@ in
       ripgrep
       nixfmt-rfc-style
       fontconfig
+      ffmpeg
 
       # Audio transcription
       bravo.transcribe-audio

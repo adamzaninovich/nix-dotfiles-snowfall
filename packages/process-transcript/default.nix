@@ -4,6 +4,15 @@ writeShellScriptBin "process-transcript" ''
   set -euo pipefail
 
   WEBHOOK_URL="https://n8n.protogen.cloud/webhook/process-transcript"
+  WEBHOOK_TEST_URL="https://n8n.protogen.cloud/webhook-test/process-transcript"
+
+  TOKEN_FILE="/run/secrets/n8n-webhook-token"
+  if [[ ! -f "''${TOKEN_FILE}" ]]; then
+    echo "Error: Auth token not found at ''${TOKEN_FILE}" >&2
+    echo "Is sops-nix configured? Try: sudo nixos-rebuild switch" >&2
+    exit 1
+  fi
+  N8N_TOKEN=$(${pkgs.coreutils}/bin/tr -d '[:space:]' < "''${TOKEN_FILE}")
 
   usage() {
     echo "Usage: process-transcript [OPTIONS] <session-directory>"
@@ -16,6 +25,7 @@ writeShellScriptBin "process-transcript" ''
     echo "Output is written to <session-directory>/<dirname>-notes.md"
     echo ""
     echo "Options:"
+    echo "  -t, --test    Use the n8n test webhook URL"
     echo "  -h, --help    Show this help message"
     echo ""
     echo "Examples:"
@@ -26,6 +36,7 @@ writeShellScriptBin "process-transcript" ''
 
   while [[ ''${#} -gt 0 ]]; do
     case "''${1}" in
+      -t|--test) WEBHOOK_URL="''${WEBHOOK_TEST_URL}"; shift ;;
       -h|--help) usage ;;
       -*) echo "Unknown option: ''${1}" >&2; exit 1 ;;
       *) break ;;
@@ -81,11 +92,16 @@ writeShellScriptBin "process-transcript" ''
   output_file="''${session_dir}/''${dir_name}-notes.md"
 
   echo "Transcript: $(${pkgs.coreutils}/bin/basename "''${json_file}")"
-  echo "Sending to n8n for processing..."
+  if [[ "''${WEBHOOK_URL}" == *"webhook-test"* ]]; then
+    echo "Sending to n8n (TEST endpoint)..."
+  else
+    echo "Sending to n8n for processing..."
+  fi
   echo ""
 
   ${pkgs.curl}/bin/curl --max-time 1800 \
     -X POST "''${WEBHOOK_URL}" \
+    -H "Authorization: ''${N8N_TOKEN}" \
     -F "file=@''${json_file}" \
     -o "''${output_file}" \
     --fail-with-body \
