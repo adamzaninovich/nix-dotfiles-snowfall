@@ -19,6 +19,8 @@
     userName = "Adam Zaninovich";
     userEmail = "adam.zaninovich@gmail.com";
 
+    lfs.enable = true;
+
     signing = {
       key = "8582542578E92AC8";
       signByDefault = true;

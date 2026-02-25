@@ -101,6 +101,7 @@ in
       fd
       jq
       ripgrep
+      zip
       nixfmt-rfc-style
       fontconfig
       ffmpeg
