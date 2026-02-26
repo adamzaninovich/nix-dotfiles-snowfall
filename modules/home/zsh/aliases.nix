@@ -459,12 +459,6 @@
       #   fi
       # }
 
-      setupdb() {
-        if [[ -f .local/production_data_packs.sql ]]; then
-          mix ecto.drop && mix ecto.create && mix ecto.migrate && PGPASSWORD="postgres" psql -h localhost -U postgres -d fist_dev -c "ALTER TABLE tickets DISABLE TRIGGER ALL;" && PGPASSWORD="postgres" psql -h localhost -U postgres -d fist_dev -f .local/production_data_packs.sql
-        fi
-      }
-
     '')
 
     # Nix build function
@@ -534,7 +528,7 @@
         elif [[ "$(uname)" == "Darwin" ]]; then
           # macOS host with nix-darwin + home-manager
           ohai "Detected macOS host, running darwin-rebuild..."
-          if [[ "$(hostname)" == "a.zaninovich-L2V57Q9LQ5" ]]; then
+          if [[ "$(hostname)" == *zaninovich-L* ]]; then
             ohai "Detected work laptop with hostname reset"
             sudo darwin-rebuild switch --flake ~/.config/snowfall#pallas
           else
