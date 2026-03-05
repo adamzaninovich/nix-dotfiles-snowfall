@@ -35,6 +35,7 @@
     stateVersion = "25.05";
 
     packages = with pkgs; [
+      bravo.perspective-cli
       # rocinante-specific packages
       ntfs3g
       shottr
