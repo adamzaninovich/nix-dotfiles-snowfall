@@ -6,6 +6,7 @@
     zsh.enable = true;
     bat.enable = true;
     direnv.enable = true;
+    devenv.enable = true;
     neovim.enable = true;
     claude.enable = true;
 

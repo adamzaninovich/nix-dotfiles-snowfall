@@ -9,6 +9,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    bravo.direnv.enable = true;
+
     home.packages = with pkgs; [
       devenv
     ];
