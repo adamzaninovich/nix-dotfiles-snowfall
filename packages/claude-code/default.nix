@@ -1,7 +1,7 @@
 { pkgs, lib, stdenv, ... }:
 
 let
-  version = "2.1.56";
+  version = "2.1.69";
 in
 stdenv.mkDerivation {
   pname = "claude-code";
@@ -9,7 +9,7 @@ stdenv.mkDerivation {
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    sha256 = "1f87p5cy6047m28inva41lc4pz4vy5xxwpqyaxjp4f32ipxc8z5r";
+    sha256 = "1b8hz5822nxs4m7r1w6z8152z2j4f8321lj09z6blx21ycf05d25";
   };
 
   sourceRoot = "package";
@@ -24,7 +24,9 @@ stdenv.mkDerivation {
     cp -r . $out/lib/claude-code/
     mkdir -p $out/bin
     makeWrapper ${pkgs.nodejs}/bin/node $out/bin/claude \
-      --add-flags "$out/lib/claude-code/cli.js"
+      --add-flags "$out/lib/claude-code/cli.js" \
+      --set DISABLE_AUTOUPDATER 1 \
+      --set DISABLE_INSTALLATION_CHECKS 1
     runHook postInstall
   '';
 

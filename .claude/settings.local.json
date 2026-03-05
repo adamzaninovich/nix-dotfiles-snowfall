@@ -23,7 +23,8 @@
       "Bash(cat:*)",
       "Bash(gh api:*)",
       "WebFetch(domain:www.pyannote.ai)",
-      "Bash(switch:*)"
+      "Bash(switch:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
