@@ -93,6 +93,7 @@
   programs.ssh = {
     enable = true;
     matchBlocks.rocinante = {
+      user = "adam";
       port = 2222;
     };
   };

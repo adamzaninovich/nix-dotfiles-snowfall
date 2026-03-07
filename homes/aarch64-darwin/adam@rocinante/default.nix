@@ -66,6 +66,7 @@
   programs.ssh = {
     enable = true;
     matchBlocks.pallas = {
+      user = "a.zaninovich";
       port = 2222;
     };
   };
