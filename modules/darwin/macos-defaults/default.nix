@@ -25,8 +25,20 @@
   documentation.enable = lib.mkDefault true;
   documentation.man.enable = lib.mkDefault true;
 
-  # SSH server configuration - prevent TERM variable override
+  # Keep Apple's Remote Login enabled (required for managed Mac firewall compliance)
   services.openssh.enable = lib.mkDefault true;
+
+  # Run a standalone sshd on port 2222 — the MDM-managed Application Firewall
+  # intercepts port 22 non-loopback connections, breaking sshd's socket handling.
+  # This daemon bypasses that by using an alternate port.
+  launchd.daemons.sshd-alt = {
+    serviceConfig = {
+      ProgramArguments = [ "/usr/sbin/sshd" "-D" "-p" "2222" ];
+      KeepAlive = true;
+      RunAtLoad = true;
+      StandardErrorPath = "/var/log/sshd.log";
+    };
+  };
 
   # Configure sshd via environment.etc (extraConfig doesn't exist in nix-darwin)
   environment.etc."ssh/sshd_config.d/100-nix-darwin.conf" = {

@@ -62,5 +62,12 @@
     };
   };
 
+  programs.ssh = {
+    enable = true;
+    matchBlocks.pallas = {
+      port = 2222;
+    };
+  };
+
   programs.home-manager.enable = true;
 }

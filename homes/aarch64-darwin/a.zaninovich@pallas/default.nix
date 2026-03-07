@@ -89,5 +89,12 @@
     };
   };
 
+  programs.ssh = {
+    enable = true;
+    matchBlocks.rocinante = {
+      port = 2222;
+    };
+  };
+
   programs.home-manager.enable = true;
 }
