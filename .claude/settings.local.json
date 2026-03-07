@@ -24,7 +24,16 @@
       "Bash(gh api:*)",
       "WebFetch(domain:www.pyannote.ai)",
       "Bash(switch:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(gh search:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)",
+      "WebFetch(domain:discussions.apple.com)",
+      "WebFetch(domain:apple.stackexchange.com)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:superuser.com)",
+      "WebFetch(domain:forums.developer.apple.com)",
+      "Bash(ssh:*)"
     ],
     "deny": [],
     "ask": []
