@@ -30,7 +30,7 @@
 
     # Work-specific modules
     dk.litellm.enable = true;
-    dk.jiratui.enable = true;
+    # dk.jiratui.enable = true;
 
     # Zen browser with stable profile (prevents new profile on flake updates)
     zen = {
@@ -51,6 +51,7 @@
       postgresql_16
 
       # macOS-common packages
+      unstable.obsidian
       bravo.pdftomarkdown
       pandoc
       poppler_utils
